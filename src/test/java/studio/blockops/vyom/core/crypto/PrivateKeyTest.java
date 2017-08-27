@@ -11,8 +11,10 @@ import org.jukito.All;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+@RunWith(Enclosed.class)
 public class PrivateKeyTest {
 
 	@RunWith(JukitoRunner.class)

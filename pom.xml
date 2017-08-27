@@ -7,10 +7,17 @@
 	<name>vyom</name>
 	<description>An ethereum inspired blockchain-based distributed computing platform with smart contract support.</description>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<dependencies>
 		<!-- Crypto Dependencies -->
-		<!-- <dependency> <groupId>org.bouncycastle</groupId> <artifactId>bcprov-jdk15on</artifactId> 
-			<version>1.58</version> </dependency> -->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>1.58</version>
+		</dependency>
 
 		<!-- General Dependencies -->
 		<dependency>
