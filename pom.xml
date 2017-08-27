@@ -8,12 +8,14 @@
 	<description>An ethereum inspired blockchain-based distributed computing platform with smart contract support.</description>
 
 	<dependencies>
+		<!-- Crypto Dependencies -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
 			<version>1.58</version>
 		</dependency>
 
+		<!-- General Dependencies -->
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
@@ -35,6 +37,7 @@
 			<version>1.2.17</version>
 		</dependency>
 
+		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>org.jukito</groupId>
 			<artifactId>jukito</artifactId>
