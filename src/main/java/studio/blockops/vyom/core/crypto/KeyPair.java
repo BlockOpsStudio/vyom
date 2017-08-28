@@ -7,6 +7,10 @@ public class KeyPair {
 	private final PrivateKey privateKey;
 	private final PublicKey publicKey;
 	
+	public static KeyPair create(PrivateKey privateKey, PublicKey publicKey) {
+		return new KeyPair(privateKey, publicKey);
+	}
+	
 	private KeyPair(PrivateKey privateKey, PublicKey publicKey) {
 		Preconditions.checkNotNull(privateKey);
 		Preconditions.checkNotNull(publicKey);

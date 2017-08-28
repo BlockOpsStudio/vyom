@@ -1,6 +1,7 @@
 package studio.blockops.vyom.core.crypto.secp256k1;
 
-import org.nem.core.crypto.*;
+import studio.blockops.vyom.core.crypto.KeyAnalyzer;
+import studio.blockops.vyom.core.crypto.PublicKey;
 
 /**
  * Implementation of the key analyzer for SECP256K1.
