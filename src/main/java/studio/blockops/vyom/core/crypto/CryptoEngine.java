@@ -14,14 +14,6 @@ public interface CryptoEngine {
 	Signer createSigner(final KeyPair keyPair);
 
 	/**
-	 * Creates a verifier.
-	 *
-	 * @param keyPair The key pair.
-	 * @return The verifier.
-	 */
-	Verifier createVerifier(final KeyPair keyPair);
-
-	/**
 	 * Creates a key generator.
 	 *
 	 * @return The key generator.
