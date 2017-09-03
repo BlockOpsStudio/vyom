@@ -16,11 +16,6 @@ public class BouncyCastleInstaller implements com.google.inject.Provider<Provide
 
         Security.addProvider(provider);
         
-        System.out.println("\n\nSecurity Providers:");
-        for (Provider p: Security.getProviders()) {
-        	System.out.println(p.getName());
-        }
-        
         return provider;
 	}
 

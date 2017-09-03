@@ -2,6 +2,7 @@ package studio.blockops.vyom.core.crypto;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -108,10 +109,10 @@ public class PrivateKeyTest {
 		public void equalsOnlyReturnsTrueForEquivalentObjects() {
 			final PrivateKey key = PrivateKey.create(new BigInteger("5641"));
 
-			assertThat(key, notNullValue());
+			assertThat(key, is(notNullValue()));
 			assertThat(key, equalTo(PrivateKey.createFromDecimalString("5641")));
-			assertThat(key, not(equalTo(PrivateKey.createFromDecimalString("5640"))));
-			assertThat(key, not(equalTo(PrivateKey.createFromHexString("5641"))));
+			assertThat(key, is(not(equalTo(PrivateKey.createFromDecimalString("5640")))));
+			assertThat(key, is(not(equalTo(PrivateKey.createFromHexString("5641")))));
 		}		
 	}
 
@@ -125,8 +126,8 @@ public class PrivateKeyTest {
 
 			assertThat(hashCode, equalTo(PrivateKey.createFromDecimalString("5641").hashCode()));
 			assertThat(hashCode, equalTo(PrivateKey.createFromHexString("1609").hashCode()));
-			assertThat(hashCode, not(equalTo(PrivateKey.createFromDecimalString("5640").hashCode())));
-			assertThat(hashCode, not(equalTo(PrivateKey.createFromHexString("5641").hashCode())));
+			assertThat(hashCode, is(not(equalTo(PrivateKey.createFromDecimalString("5640").hashCode()))));
+			assertThat(hashCode, is(not(equalTo(PrivateKey.createFromHexString("5641").hashCode()))));
 		}		
 	}
 

@@ -35,8 +35,8 @@ public class SecP256K1BlockCipher implements BlockCipher {
 	@Inject
 	private SecP256K1BlockCipher(
 			Curve curve,
-			@Assisted KeyPair senderKeyPair,
-			@Assisted KeyPair recipentKeyPair) {		
+			@Assisted("senderKeyPair") KeyPair senderKeyPair,
+			@Assisted("recipientKeyPair") KeyPair recipentKeyPair) {		
 		encryptEngine = createEngine(curve, true,  senderKeyPair.getPrivateKey(), 	recipentKeyPair.getPublicKey());
 		decryptEngine = createEngine(curve, false, recipentKeyPair.getPrivateKey(), senderKeyPair.getPublicKey());
 	}

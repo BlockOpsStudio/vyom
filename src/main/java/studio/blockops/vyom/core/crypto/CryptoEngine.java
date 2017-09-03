@@ -1,5 +1,7 @@
 package studio.blockops.vyom.core.crypto;
 
+import com.google.inject.assistedinject.Assisted;
+
 /**
  * Represents a cryptographic engine that is a factory of crypto-providers.
  */
@@ -27,7 +29,9 @@ public interface CryptoEngine {
 	 * @param recipientKeyPair The recipient KeyPair. The recipient's private key is required for decryption.
 	 * @return The IES cipher.
 	 */
-	BlockCipher createBlockCipher(final KeyPair senderKeyPair, final KeyPair recipientKeyPair);
+	BlockCipher createBlockCipher(
+			@Assisted("senderKeyPair") KeyPair senderKeyPair,
+			@Assisted("recipientKeyPair") KeyPair recipientKeyPair);
 
 	/**
 	 * Creates a key analyzer.

@@ -38,13 +38,14 @@ public class SecP256K1KeyGenerator implements KeyGenerator {
 		generator.init(keyGenParams);
 
 		final AsymmetricCipherKeyPair keyPair = generator.generateKeyPair();
-		final ECPrivateKeyParameters privateKeyParams = (ECPrivateKeyParameters)keyPair.getPrivate();
+		final ECPrivateKeyParameters privateKeyParams = (ECPrivateKeyParameters) keyPair.getPrivate();
 		final PrivateKey privateKey = PrivateKey.create(privateKeyParams.getD());
 		final PublicKey publicKey = derivePublicKey(privateKey);
 		return KeyPair.create(privateKey, publicKey);
 	}
-
-	private PublicKey derivePublicKey(final PrivateKey privateKey) {
+	
+	@Override	
+	public PublicKey derivePublicKey(final PrivateKey privateKey) {
 		final ECPoint point = this.curve.getParams().getG().multiply(privateKey.getRaw());
 		return PublicKey.create(point.getEncoded(true));
 	}

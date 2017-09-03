@@ -1,6 +1,7 @@
 package studio.blockops.vyom.core.crypto;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -102,9 +103,9 @@ public class PublicKeyTest {
 		public void equalsOnlyReturnsTrueForEquivalentObjects() {
 			final PublicKey key = PublicKey.create(new byte[] { 0x22, (byte) 0xAB, 0x71 });
 
-			assertThat(key, notNullValue());
+			assertThat(key, is(notNullValue()));
 			assertThat(key, equalTo(PublicKey.createFromHexString("22ab71")));
-			assertThat(key, not(equalTo(PublicKey.createFromHexString("22ab72"))));
+			assertThat(key, is(not(equalTo(PublicKey.createFromHexString("22ab72")))));
 		}		
 	}
 
@@ -117,7 +118,7 @@ public class PublicKeyTest {
 			final int hashCode = key.hashCode();
 
 			assertThat(hashCode, equalTo(PublicKey.createFromHexString("22ab71").hashCode()));
-			assertThat(hashCode, not(equalTo(PublicKey.createFromHexString("22ab72").hashCode())));
+			assertThat(hashCode, is(not(equalTo(PublicKey.createFromHexString("22ab72").hashCode()))));
 		}		
 	}
 

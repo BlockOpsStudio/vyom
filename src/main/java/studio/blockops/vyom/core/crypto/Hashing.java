@@ -2,6 +2,7 @@ package studio.blockops.vyom.core.crypto;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 /**
  * Static class that exposes hash functions.
@@ -48,13 +49,14 @@ public class Hashing {
 	private static byte[] hash(final String algorithm, final byte[]... inputs) {
 		MessageDigest digest = null;
 		try {
-			digest = MessageDigest.getInstance(algorithm);
+			digest = MessageDigest.getInstance(algorithm, "BC");
 
 			for (final byte[] input : inputs) {
 				digest.update(input);
 			}
-
 		} catch (NoSuchAlgorithmException e) {
+			throw new CryptoException(e);
+		} catch (NoSuchProviderException e) {
 			throw new CryptoException(e);
 		}
 		
