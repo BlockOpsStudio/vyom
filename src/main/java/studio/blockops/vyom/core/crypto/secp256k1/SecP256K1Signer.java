@@ -4,6 +4,7 @@ import java.math.BigInteger;
 
 import javax.inject.Inject;
 
+import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.digests.SHA3Digest;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
@@ -38,7 +39,7 @@ public class SecP256K1Signer implements Signer {
 
 	@Override
 	public Signature sign(final byte[] data) {
-		final ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA3Digest(256)));
+		final ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
 		final ECPrivateKeyParameters privateKeyParameters = new ECPrivateKeyParameters(
 				this.keyPair.getPrivateKey().getRaw(),
 				this.curve.getParams());
