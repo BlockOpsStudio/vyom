@@ -2,7 +2,7 @@ package studio.blockops.vyom.core.crypto;
 
 import java.math.BigInteger;
 
-import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.spongycastle.crypto.params.ECDomainParameters;
 
 /**
  * Interface for getting information for a curve.

@@ -1,8 +1,8 @@
 package studio.blockops.vyom.core.crypto.secp256k1;
 
-import org.bouncycastle.asn1.sec.SECNamedCurves;
-import org.bouncycastle.asn1.x9.X9ECParameters;
-import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.spongycastle.asn1.sec.SECNamedCurves;
+import org.spongycastle.asn1.x9.X9ECParameters;
+import org.spongycastle.crypto.params.ECDomainParameters;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;

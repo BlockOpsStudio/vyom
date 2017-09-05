@@ -8,7 +8,7 @@ public class CryptoModule extends AbstractModule {
 	
 	@Override
 	protected void configure() {
-		bind(Provider.class).toProvider(BouncyCastleInstaller.class).asEagerSingleton();
+		bind(Provider.class).toProvider(SpongyCastleInstaller.class).asEagerSingleton();
 	}
 
 }

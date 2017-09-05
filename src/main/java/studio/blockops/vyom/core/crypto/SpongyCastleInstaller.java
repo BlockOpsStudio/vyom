@@ -3,9 +3,9 @@ package studio.blockops.vyom.core.crypto;
 import java.security.Provider;
 import java.security.Security;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.spongycastle.jce.provider.BouncyCastleProvider;
 
-public class BouncyCastleInstaller implements com.google.inject.Provider<Provider> {
+public class SpongyCastleInstaller implements com.google.inject.Provider<Provider> {
 	
 	@Override
 	public Provider get() {

@@ -2,7 +2,7 @@ package studio.blockops.vyom.core.crypto.secp256k1;
 
 import java.math.BigInteger;
 
-import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.spongycastle.crypto.params.ECDomainParameters;
 
 import studio.blockops.vyom.core.crypto.Curve;
 

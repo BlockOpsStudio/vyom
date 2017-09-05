@@ -49,7 +49,7 @@ public class Hashing {
 	private static byte[] hash(final String algorithm, final byte[]... inputs) {
 		MessageDigest digest = null;
 		try {
-			digest = MessageDigest.getInstance(algorithm, "BC");
+			digest = MessageDigest.getInstance(algorithm, "SC");
 
 			for (final byte[] input : inputs) {
 				digest.update(input);

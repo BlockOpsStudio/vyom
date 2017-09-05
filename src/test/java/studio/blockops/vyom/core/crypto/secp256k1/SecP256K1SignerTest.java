@@ -1,6 +1,6 @@
 package studio.blockops.vyom.core.crypto.secp256k1;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import java.math.BigInteger;
@@ -13,8 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
-
-import com.google.common.base.Charsets;
 
 import studio.blockops.vyom.core.crypto.CryptoEngine;
 import studio.blockops.vyom.core.crypto.CryptoModule;

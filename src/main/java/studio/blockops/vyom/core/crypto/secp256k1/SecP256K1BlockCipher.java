@@ -2,17 +2,17 @@ package studio.blockops.vyom.core.crypto.secp256k1;
 
 import javax.inject.Inject;
 
-import org.bouncycastle.crypto.BufferedBlockCipher;
-import org.bouncycastle.crypto.InvalidCipherTextException;
-import org.bouncycastle.crypto.agreement.ECDHBasicAgreement;
-import org.bouncycastle.crypto.digests.SHA256Digest;
-import org.bouncycastle.crypto.engines.AESFastEngine;
-import org.bouncycastle.crypto.macs.HMac;
-import org.bouncycastle.crypto.modes.SICBlockCipher;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
-import org.bouncycastle.crypto.params.IESParameters;
 import org.ethereum.ConcatKDFBytesGenerator;
 import org.ethereum.crypto.EthereumIESEngine;
+import org.spongycastle.crypto.BufferedBlockCipher;
+import org.spongycastle.crypto.InvalidCipherTextException;
+import org.spongycastle.crypto.agreement.ECDHBasicAgreement;
+import org.spongycastle.crypto.digests.SHA256Digest;
+import org.spongycastle.crypto.engines.AESFastEngine;
+import org.spongycastle.crypto.macs.HMac;
+import org.spongycastle.crypto.modes.SICBlockCipher;
+import org.spongycastle.crypto.params.ECPrivateKeyParameters;
+import org.spongycastle.crypto.params.IESParameters;
 
 import com.google.inject.assistedinject.Assisted;
 
