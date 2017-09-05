@@ -3,10 +3,11 @@ package studio.blockops.vyom.core.crypto;
 import java.math.BigInteger;
 import java.util.Arrays;
 
+import org.ethereum.util.ByteUtil;
+import org.spongycastle.util.encoders.Hex;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-
-import studio.blockops.vyom.core.utils.BaseCodec;
 
 /**
  * Digital Signature Interface
@@ -16,6 +17,7 @@ public class Signature {
 
 	private final BigInteger r;
 	private final BigInteger s;
+	private final byte v;
 
 	/**
 	 * Creates a new signature.
@@ -31,6 +33,7 @@ public class Signature {
 
 		this.r = r;
 		this.s = s;
+		this.v = 0;
 	}
 
 	/**
@@ -52,6 +55,7 @@ public class Signature {
 
 		this.r = r;
 		this.s = s;
+		this.v = 0;
 	}
 
 	/**
@@ -69,6 +73,19 @@ public class Signature {
 
 		this.r = new BigInteger(1, r);
 		this.s = new BigInteger(1, s);
+		this.v = 0;
+	}
+
+	/**
+	 * Creates a new signature.
+	 *
+	 * @param r The r-part of the signature.
+	 * @param s The s-part of the signature.
+	 */
+	public Signature(final BigInteger r, final BigInteger s, byte v) {
+		this.r = r;
+		this.s = s;
+		this.v = v;
 	}
 
 	/**
@@ -113,10 +130,14 @@ public class Signature {
 	 * @return a big-endian 64-byte representation of the signature
 	 */
 	public byte[] getBytes() {
-		byte[] c = new byte[64];
-		System.arraycopy(getBinaryR(), 0, c, 0, 32);
-		System.arraycopy(getBinaryS(), 0, c, 32, 32);
-		return c;
+        final byte fixedV = this.v >= 27
+                ? (byte) (this.v - 27)
+                :this.v;
+
+        return ByteUtil.merge(
+                ByteUtil.bigIntegerToBytes(this.r),
+                ByteUtil.bigIntegerToBytes(this.s),
+                new byte[]{fixedV});
 	}
 
 	@Override
@@ -135,6 +156,6 @@ public class Signature {
 
 	@Override
 	public String toString() {
-		return BaseCodec.encodeBase16(this.getBytes());
+		return Hex.toHexString(getBytes());
 	}
 }
