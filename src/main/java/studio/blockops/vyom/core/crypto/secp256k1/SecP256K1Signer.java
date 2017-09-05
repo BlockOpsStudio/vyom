@@ -1,6 +1,7 @@
 package studio.blockops.vyom.core.crypto.secp256k1;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -15,6 +16,7 @@ import org.spongycastle.math.ec.ECPoint;
 import com.google.inject.assistedinject.Assisted;
 
 import studio.blockops.vyom.core.crypto.Curve;
+import studio.blockops.vyom.core.crypto.ECKeyUtil;
 import studio.blockops.vyom.core.crypto.Hashing;
 import studio.blockops.vyom.core.crypto.KeyPair;
 import studio.blockops.vyom.core.crypto.Signature;
@@ -44,10 +46,37 @@ public class SecP256K1Signer implements Signer {
 				this.keyPair.getPrivateKey().getRaw(),
 				this.curve.getParams());
 		signer.init(true, privateKeyParameters);
-		final byte[] hash = Hashing.sha3_256(data);
-		final BigInteger[] components = signer.generateSignature(hash);
+		
+		final byte[] messageHash = Hashing.sha3_256(data);
+		final BigInteger[] components = signer.generateSignature(messageHash);
+		
 		final Signature signature = new Signature(components[0], components[1]);
-		return this.makeSignatureCanonical(signature);
+		final Signature canonicalSignature = this.makeSignatureCanonical(signature);
+		return makeRecoverableSignature(canonicalSignature, messageHash);
+	}
+	
+	private Signature makeRecoverableSignature(final Signature signature, final byte[] messageHash) {
+		// Now we have to work backwards to figure out the recId needed to recover the signature.
+        int recoverID = -1;
+
+		final byte[] thisKey = getUncompressedPublicKey();
+        for (int i = 0; i < 4; i++) {
+            final byte[] k = ECKeyUtil.recoverPubBytesFromSignature(curve, i, signature, messageHash);
+            if (k != null && Arrays.equals(k, thisKey)) {
+                recoverID = i;
+                break;
+            }
+        }
+        
+        if (recoverID == -1)
+            throw new RuntimeException("Could not construct a recoverable key. This should never happen.");
+        
+        return new Signature(signature.getR(), signature.getS(), (byte) (recoverID + 27));
+	}
+	
+	private byte[] getUncompressedPublicKey() {
+		final ECPoint point = this.curve.getParams().getG().multiply(keyPair.getPrivateKey().getRaw());
+		return point.getEncoded(false);
 	}
 
 	@Override
