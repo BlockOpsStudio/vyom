@@ -6,6 +6,7 @@ import java.util.Arrays;
 import com.google.common.base.Preconditions;
 
 import studio.blockops.vyom.core.utils.BaseCodec;
+import com.google.common.base.Objects;
 
 /**
  * Digital Signature Interface
@@ -13,8 +14,8 @@ import studio.blockops.vyom.core.utils.BaseCodec;
 public class Signature {
 	private static final BigInteger MAXIMUM_VALUE = BigInteger.ONE.shiftLeft(256).subtract(BigInteger.ONE);
 
-	private final byte[] r;
-	private final byte[] s;
+	private final BigInteger r;
+	private final BigInteger s;
 
 	/**
 	 * Creates a new signature.
@@ -25,12 +26,11 @@ public class Signature {
 	public Signature(final BigInteger r, final BigInteger s) {
 		Preconditions.checkNotNull(r);
 		Preconditions.checkNotNull(s);
-		Preconditions.checkArgument(
-				(0 < r.compareTo(MAXIMUM_VALUE) || 0 < s.compareTo(MAXIMUM_VALUE)),
-				"r and s must fit into 32 bytes");
+		Preconditions.checkArgument(r.compareTo(MAXIMUM_VALUE) < 0,	"r must fit into 32 bytes");
+		Preconditions.checkArgument(s.compareTo(MAXIMUM_VALUE) < 0,	"s must fit into 32 bytes");
 
-		this.r = r.toByteArray();
-		this.s = s.toByteArray();
+		this.r = r;
+		this.s = s;
 	}
 
 	/**
@@ -44,8 +44,14 @@ public class Signature {
 				(64 != bytes.length),
 				"binary signature representation must be 64 bytes");
 
-		this.r = Arrays.copyOfRange(bytes, 0, 32);
-		this.s = Arrays.copyOfRange(bytes, 32, 64);
+		BigInteger r = new BigInteger(1, Arrays.copyOfRange(bytes, 0, 32));
+		BigInteger s = new BigInteger(1, Arrays.copyOfRange(bytes, 32, 64));
+		
+		Preconditions.checkArgument(r.compareTo(MAXIMUM_VALUE) < 0,	"r must fit into 32 bytes");
+		Preconditions.checkArgument(s.compareTo(MAXIMUM_VALUE) < 0,	"s must fit into 32 bytes");
+
+		this.r = r;
+		this.s = s;
 	}
 
 	/**
@@ -61,8 +67,8 @@ public class Signature {
 				(32 != r.length || 32 != s.length),
 				"binary signature representation of r and s must both have 32 bytes length");
 
-		this.r = r;
-		this.s = s;
+		this.r = new BigInteger(1, r);
+		this.s = new BigInteger(1, s);
 	}
 
 	/**
@@ -71,7 +77,7 @@ public class Signature {
 	 * @return The r-part of the signature.
 	 */
 	public BigInteger getR() {
-		return new BigInteger(1, r);
+		return r;
 	}
 
 	/**
@@ -80,7 +86,7 @@ public class Signature {
 	 * @return The r-part of the signature.
 	 */
 	public byte[] getBinaryR() {
-		return this.r;
+		return this.r.toByteArray();
 	}
 
 	/**
@@ -89,7 +95,7 @@ public class Signature {
 	 * @return The s-part of the signature.
 	 */
 	public BigInteger getS() {
-		return new BigInteger(1, s);
+		return s;
 	}
 
 	/**
@@ -98,7 +104,7 @@ public class Signature {
 	 * @return The s-part of the signature.
 	 */
 	public byte[] getBinaryS() {
-		return this.s;
+		return this.s.toByteArray();
 	}
 
 	/**
@@ -108,25 +114,23 @@ public class Signature {
 	 */
 	public byte[] getBytes() {
 		byte[] c = new byte[64];
-		System.arraycopy(r, 0, c, 0, 32);
-		System.arraycopy(s, 0, c, 32, 32);
+		System.arraycopy(getBinaryR(), 0, c, 0, 32);
+		System.arraycopy(getBinaryS(), 0, c, 32, 32);
 		return c;
 	}
 
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(this.r) ^ Arrays.hashCode(this.s);
+		return Objects.hashCode(r, s);
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
-		if (obj == null || !(obj instanceof Signature)) {
-			return false;
+	public boolean equals(Object object) {
+		if (object instanceof Signature) {
+			Signature that = (Signature) object;
+			return Objects.equal(this.r, that.r) && Objects.equal(this.s, that.s);
 		}
-
-		final Signature other = (Signature) obj;
-
-		return Arrays.equals(this.r, other.r) && Arrays.equals(this.s, other.s);
+		return false;
 	}
 
 	@Override
