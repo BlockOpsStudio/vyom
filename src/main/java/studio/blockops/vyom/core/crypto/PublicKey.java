@@ -1,11 +1,11 @@
 package studio.blockops.vyom.core.crypto;
 
 import java.util.Arrays;
-import java.util.Locale;
+
+import org.spongycastle.util.encoders.DecoderException;
+import org.spongycastle.util.encoders.Hex;
 
 import com.google.common.base.Preconditions;
-
-import studio.blockops.vyom.core.utils.BaseCodec;
 
 /**
  * Represents a public key.
@@ -34,8 +34,8 @@ public final class PublicKey {
 	public static PublicKey createFromHexString(final String value) {
 		try {
 			Preconditions.checkNotNull(value);
-			return new PublicKey(BaseCodec.decodeBase16(value.toLowerCase(Locale.US)));
-		} catch (final IllegalArgumentException e) {
+			return new PublicKey(Hex.decode(value));
+		} catch (final DecoderException e) {
 			throw new CryptoException(e);
 		}
 	}
@@ -71,7 +71,7 @@ public final class PublicKey {
 	
 	@Override
 	public String toString() {
-		return BaseCodec.encodeBase16(this.value);
+		return Hex.toHexString(this.value);
 	}
 	
 }
