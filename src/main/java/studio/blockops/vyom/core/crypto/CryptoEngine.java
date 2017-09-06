@@ -32,11 +32,4 @@ public interface CryptoEngine {
 	BlockCipher createBlockCipher(
 			@Assisted("senderKeyPair") KeyPair senderKeyPair,
 			@Assisted("recipientKeyPair") KeyPair recipientKeyPair);
-
-	/**
-	 * Creates a key analyzer.
-	 *
-	 * @return The key analyzer.
-	 */
-	KeyAnalyzer createKeyAnalyzer();
 }

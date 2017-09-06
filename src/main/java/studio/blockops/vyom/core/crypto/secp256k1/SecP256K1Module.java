@@ -12,7 +12,6 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import studio.blockops.vyom.core.crypto.BlockCipher;
 import studio.blockops.vyom.core.crypto.CryptoEngine;
 import studio.blockops.vyom.core.crypto.Curve;
-import studio.blockops.vyom.core.crypto.KeyAnalyzer;
 import studio.blockops.vyom.core.crypto.KeyGenerator;
 import studio.blockops.vyom.core.crypto.Signer;
 
@@ -24,7 +23,6 @@ public class SecP256K1Module extends AbstractModule {
 			.implement(Signer.class, SecP256K1Signer.class)
 			.implement(KeyGenerator.class, SecP256K1KeyGenerator.class)
 			.implement(BlockCipher.class, SecP256K1BlockCipher.class)
-			.implement(KeyAnalyzer.class, SecP256K1KeyAnalyzer.class)
 			.build(CryptoEngine.class));
 	}
 	
@@ -34,5 +32,4 @@ public class SecP256K1Module extends AbstractModule {
 		final ECDomainParameters ecParams = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH());
 		return new SecP256K1Curve(ecParams, ecParams.getN().shiftRight(1));
 	}
-
 }

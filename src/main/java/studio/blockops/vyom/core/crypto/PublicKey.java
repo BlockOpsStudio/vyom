@@ -12,6 +12,8 @@ import com.google.common.base.Preconditions;
  */
 public final class PublicKey {
 
+	private static final int COMPRESSED_KEY_SIZE = 33;
+
 	private final byte[] value;
 	
 	/**
@@ -46,6 +48,20 @@ public final class PublicKey {
 	
 	public byte[] getRaw() {
 		return this.value;
+	}
+	
+	public boolean isCompressed() {
+		if (COMPRESSED_KEY_SIZE != value.length) {
+			return false;
+		}
+
+		switch (value[0]) {
+			case 0x02:
+			case 0x03:
+				return true;
+		}
+
+		return false;
 	}
 	
 	@Override
