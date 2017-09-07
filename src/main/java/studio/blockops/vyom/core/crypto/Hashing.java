@@ -3,6 +3,7 @@ package studio.blockops.vyom.core.crypto;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.util.Arrays;
 
 /**
  * Static class that exposes hash functions.
@@ -34,6 +35,19 @@ public class Hashing {
 	public static byte[] sha3_512(final byte[]... inputs) {
 		return hash(SHA3_512_ALGORITHM, inputs);
 	}
+
+    /**
+     * Calculates RIGTMOST160(SHA3(input)). This is used in address
+     * calculations. *
+     * 
+     * @param input
+     *            - data
+     * @return - 20 right bytes of the hash keccak of the data
+     */
+    public static byte[] sha3omit12(byte[] input) {
+        byte[] hash = sha3_256(input);
+        return Arrays.copyOfRange(hash, 12, hash.length);
+    }
 
 	/**
 	 * Performs a RIPEMD160 hash of the concatenated inputs.

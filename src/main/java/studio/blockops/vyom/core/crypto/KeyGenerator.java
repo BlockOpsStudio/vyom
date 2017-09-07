@@ -19,4 +19,12 @@ public interface KeyGenerator {
 	 * @return The public key.
 	 */
 	PublicKey derivePublicKey(final PrivateKey privateKey);
+
+    /**
+     * Compute an address from an encoded public key.
+     *
+     * @param publicKey the public key
+     * @return 20-byte address
+     */
+    byte[] computeAddress(final PublicKey publicKey);
 }

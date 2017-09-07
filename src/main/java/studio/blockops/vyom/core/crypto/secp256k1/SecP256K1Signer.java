@@ -43,15 +43,15 @@ public class SecP256K1Signer implements Signer {
 	public Signature sign(final byte[] data) {
 		final ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
 		final ECPrivateKeyParameters privateKeyParameters = new ECPrivateKeyParameters(
-				this.keyPair.getPrivateKey().getRaw(),
-				this.curve.getParams());
+				keyPair.getPrivateKey().getRaw(),
+				curve.getParams());
 		signer.init(true, privateKeyParameters);
 		
 		final byte[] messageHash = Hashing.sha3_256(data);
 		final BigInteger[] components = signer.generateSignature(messageHash);
 		
 		final Signature signature = new Signature(components[0], components[1]);
-		final Signature canonicalSignature = this.makeSignatureCanonical(signature);
+		final Signature canonicalSignature = makeSignatureCanonical(signature);
 		return makeRecoverableSignature(canonicalSignature, messageHash);
 	}
 	
@@ -75,7 +75,7 @@ public class SecP256K1Signer implements Signer {
 	}
 	
 	private byte[] getUncompressedPublicKey() {
-		final ECPoint point = this.curve.getParams().getG().multiply(keyPair.getPrivateKey().getRaw());
+		final ECPoint point = curve.getParams().getG().multiply(keyPair.getPrivateKey().getRaw());
 		return point.getEncoded(false);
 	}
 
@@ -90,12 +90,12 @@ public class SecP256K1Signer implements Signer {
 
 	@Override
 	public boolean verify(final byte[] data, final Signature signature) {
-		if (!this.isCanonicalSignature(signature)) {
+		if (!isCanonicalSignature(signature)) {
 			return false;
 		}
 
 		final ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA3Digest(256)));
-		final ECPoint point = curve.getParams().getCurve().decodePoint(this.keyPair.getPublicKey().getRaw());
+		final ECPoint point = curve.getParams().getCurve().decodePoint(keyPair.getPublicKey().getRaw());
 		final ECPublicKeyParameters publicKeyParameters = new ECPublicKeyParameters(point, curve.getParams());
 		signer.init(false, publicKeyParameters);
 		final byte[] hash = Hashing.sha3_256(data);

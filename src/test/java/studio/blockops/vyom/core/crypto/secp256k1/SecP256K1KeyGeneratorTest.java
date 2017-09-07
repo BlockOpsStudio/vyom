@@ -111,4 +111,25 @@ public class SecP256K1KeyGeneratorTest {
 			}
 		}	
 	}
+
+	@RunWith(JukitoRunner.class)
+	public static class ComputeAddressTest extends SecP256K1KeyGeneratorTest {
+
+		public static class Module extends JukitoModule {
+
+			@Override
+			protected void configureTest() {
+				install(new CryptoModule());
+				install(new SecP256K1Module());
+			}
+		}
+
+		@Test
+		public void computeAddressTest() {
+			PublicKey publicKey = PublicKey.createFromHexString("030947751e3022ecf3016be03ec77ab0ce3c2662b4843898cb068d74f698ccc8ad");
+
+			byte[] address = keyGenerator.computeAddress(publicKey);
+			System.err.println(address);
+		}
+	}
 }
