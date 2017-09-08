@@ -1,5 +1,7 @@
 package studio.blockops.vyom.core.crypto;
 
+import studio.blockops.vyom.core.Address;
+
 /**
  * Interface for generating keys.
  */
@@ -24,7 +26,7 @@ public interface KeyGenerator {
      * Compute an address from an encoded public key.
      *
      * @param publicKey the public key
-     * @return 20-byte address
+     * @return An Address
      */
-    byte[] computeAddress(final PublicKey publicKey);
+    Address computeAddress(final PublicKey publicKey);
 }

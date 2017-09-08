@@ -11,6 +11,7 @@ import org.spongycastle.crypto.params.ECKeyGenerationParameters;
 import org.spongycastle.crypto.params.ECPrivateKeyParameters;
 import org.spongycastle.math.ec.ECPoint;
 
+import studio.blockops.vyom.core.Address;
 import studio.blockops.vyom.core.crypto.Curve;
 import studio.blockops.vyom.core.crypto.Hashing;
 import studio.blockops.vyom.core.crypto.KeyGenerator;
@@ -53,9 +54,10 @@ public class SecP256K1KeyGenerator implements KeyGenerator {
 	}
 	
 	@Override
-	public byte[] computeAddress(PublicKey publicKey) {
+	public Address computeAddress(PublicKey publicKey) {
 		final ECPoint point = curve.getParams().getCurve().decodePoint(publicKey.getRaw());
 		byte[] uncompressedPublicKey = point.getEncoded(false);
-		return Hashing.sha3omit12(Arrays.copyOfRange(uncompressedPublicKey, 1, uncompressedPublicKey.length));		
+		byte[] address = Hashing.sha3omit12(Arrays.copyOfRange(uncompressedPublicKey, 1, uncompressedPublicKey.length));
+		return Address.create(address);
 	}
 }

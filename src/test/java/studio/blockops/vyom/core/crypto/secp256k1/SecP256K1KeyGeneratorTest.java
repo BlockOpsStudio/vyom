@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import studio.blockops.vyom.core.Address;
 import studio.blockops.vyom.core.crypto.CryptoModule;
 import studio.blockops.vyom.core.crypto.KeyPair;
 import studio.blockops.vyom.core.crypto.PrivateKey;
@@ -114,6 +115,9 @@ public class SecP256K1KeyGeneratorTest {
 
 	@RunWith(JukitoRunner.class)
 	public static class ComputeAddressTest extends SecP256K1KeyGeneratorTest {
+		
+		private static final String publicKeyHexString = "030947751e3022ecf3016be03ec77ab0ce3c2662b4843898cb068d74f698ccc8ad";
+		private static final Address address = Address.createFromHexString("cd2a3d9f938e13cd947ec05abc7fe734df8dd826");
 
 		public static class Module extends JukitoModule {
 
@@ -126,10 +130,11 @@ public class SecP256K1KeyGeneratorTest {
 
 		@Test
 		public void computeAddressTest() {
-			PublicKey publicKey = PublicKey.createFromHexString("030947751e3022ecf3016be03ec77ab0ce3c2662b4843898cb068d74f698ccc8ad");
+			PublicKey publicKey = PublicKey.createFromHexString(publicKeyHexString);
 
-			byte[] address = keyGenerator.computeAddress(publicKey);
-			System.err.println(address);
+			Address actual = keyGenerator.computeAddress(publicKey);
+			
+			assertThat(actual, equalTo(address));
 		}
 	}
 }
