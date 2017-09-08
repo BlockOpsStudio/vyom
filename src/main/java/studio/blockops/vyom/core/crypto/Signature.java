@@ -1,19 +1,22 @@
 package studio.blockops.vyom.core.crypto;
 
+import static org.ethereum.util.BIUtil.isLessThan;
+import static org.ethereum.util.BIUtil.isMoreThan;
+
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Objects;
 
+import org.ethereum.config.Constants;
 import org.ethereum.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 /**
  * Digital Signature Interface
  */
 public class Signature {
-	private static final BigInteger MAXIMUM_VALUE = BigInteger.ONE.shiftLeft(256).subtract(BigInteger.ONE);
 
 	private final BigInteger r;
 	private final BigInteger s;
@@ -26,14 +29,7 @@ public class Signature {
 	 * @param s The s-part of the signature.
 	 */
 	public Signature(final BigInteger r, final BigInteger s) {
-		Preconditions.checkNotNull(r);
-		Preconditions.checkNotNull(s);
-		Preconditions.checkArgument(r.compareTo(MAXIMUM_VALUE) < 0,	"r must fit into 32 bytes");
-		Preconditions.checkArgument(s.compareTo(MAXIMUM_VALUE) < 0,	"s must fit into 32 bytes");
-
-		this.r = r;
-		this.s = s;
-		this.v = 0;
+		this(r, s, (byte) 0);
 	}
 
 	/**
@@ -49,10 +45,9 @@ public class Signature {
 
 		BigInteger r = new BigInteger(1, Arrays.copyOfRange(bytes, 0, 32));
 		BigInteger s = new BigInteger(1, Arrays.copyOfRange(bytes, 32, 64));
-		
-		Preconditions.checkArgument(r.compareTo(MAXIMUM_VALUE) < 0,	"r must fit into 32 bytes");
-		Preconditions.checkArgument(s.compareTo(MAXIMUM_VALUE) < 0,	"s must fit into 32 bytes");
 
+		validate(r, s, (byte) 0);
+		
 		this.r = r;
 		this.s = s;
 		this.v = 0;
@@ -82,10 +77,24 @@ public class Signature {
 	 * @param r The r-part of the signature.
 	 * @param s The s-part of the signature.
 	 */
-	public Signature(final BigInteger r, final BigInteger s, byte v) {
+	public Signature(final BigInteger r, final BigInteger s, final byte v) {
+		validate(r, s, v);
 		this.r = r;
 		this.s = s;
 		this.v = v;
+	}
+
+	private void validate(final BigInteger r, final BigInteger s, final byte v) {
+		Preconditions.checkNotNull(r);
+		Preconditions.checkNotNull(s);
+		
+		Preconditions.checkArgument(v == 0 || v == 27 || v == 28, "Not a valid value for v");
+
+        Preconditions.checkArgument(isMoreThan(r, BigInteger.ONE), "r cannot be less than 1");
+        Preconditions.checkArgument(isMoreThan(s, BigInteger.ONE), "s cannot be less than 1");
+
+        Preconditions.checkArgument(isLessThan(r, Constants.getSECP256K1N()), "r cannot be more than max value" + Constants.getSECP256K1N());
+        Preconditions.checkArgument(isLessThan(s, Constants.getSECP256K1N()), "s cannot be more than max value" + Constants.getSECP256K1N());
 	}
 
 	/**
@@ -125,9 +134,18 @@ public class Signature {
 	}
 
 	/**
-	 * Gets a big-endian 64-byte representation of the signature.
+	 * Gets the v-part of the signature.
 	 *
-	 * @return a big-endian 64-byte representation of the signature
+	 * @return The v-part of the signature.
+	 */
+	public byte getV() {
+		return v;
+	}
+
+	/**
+	 * Gets a big-endian 65-byte representation of the signature with recoverID.
+	 *
+	 * @return a big-endian 65-byte representation of the signature with recoverID.
 	 */
 	public byte[] getBytes() {
         final byte fixedV = this.v >= 27
@@ -142,14 +160,14 @@ public class Signature {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(r, s);
+		return Objects.hash(r, s, v);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof Signature) {
 			Signature that = (Signature) object;
-			return Objects.equal(this.r, that.r) && Objects.equal(this.s, that.s);
+			return Objects.equals(this.r, that.r) && Objects.equals(this.s, that.s) && Objects.equals(this.v, that.v);
 		}
 		return false;
 	}
