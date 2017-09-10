@@ -12,11 +12,9 @@ import studio.blockops.vyom.core.crypto.Curve;
 public class SecP256K1Curve implements Curve {
 
 	private final ECDomainParameters params;
-	private final BigInteger halfGroupOrder;
 
-	SecP256K1Curve(final ECDomainParameters params, final BigInteger halfGroupOrder) {
+	SecP256K1Curve(final ECDomainParameters params) {
 		this.params = params;
-		this.halfGroupOrder = halfGroupOrder;
 	}
 
 	@Override
@@ -31,7 +29,7 @@ public class SecP256K1Curve implements Curve {
 
 	@Override
 	public BigInteger getHalfGroupOrder() {
-		return this.halfGroupOrder;
+		return this.params.getN().shiftRight(1);
 	}
 
 	@Override

@@ -30,6 +30,6 @@ public class SecP256K1Module extends AbstractModule {
 	Curve provideCurve() {
 		final X9ECParameters params = SECNamedCurves.getByName("secp256k1");
 		final ECDomainParameters ecParams = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH());
-		return new SecP256K1Curve(ecParams, ecParams.getN().shiftRight(1));
+		return new SecP256K1Curve(ecParams);
 	}
 }
