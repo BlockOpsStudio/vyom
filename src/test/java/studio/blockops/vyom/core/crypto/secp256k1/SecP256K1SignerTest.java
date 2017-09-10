@@ -84,7 +84,7 @@ public class SecP256K1SignerTest {
 			
 	        final BigInteger r = new BigInteger("95350169487015575001444507567851457309689354890536757640816472151471942911739");
 	        final BigInteger s = new BigInteger("53263359985948886716508128220321578640585687230908938312863706887350789467339");
-	        final Signature signature = new Signature(r, s, (byte) 28);
+	        final Signature signature = Signature.create(r, s, (byte) 28);
 			
 	        assertTrue(signer.verify(input, signature));
 	    }
@@ -106,7 +106,7 @@ public class SecP256K1SignerTest {
 			
 	        final BigInteger r = new BigInteger("28157690258821599598544026901946453245423343069728565040002908283498585537001");
 	        final BigInteger s = new BigInteger("30212485197630673222315826773656074299979444367665131281281249560925428307087");
-	        final Signature signature = new Signature(r, s, (byte) 28);
+	        final Signature signature = Signature.create(r, s, (byte) 28);
 			
 	        assertFalse(signer.verify(input, signature));
 	    }

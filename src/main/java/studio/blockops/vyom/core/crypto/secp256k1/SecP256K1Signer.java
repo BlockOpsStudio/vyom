@@ -50,7 +50,7 @@ public class SecP256K1Signer implements Signer {
 		final byte[] messageHash = Hashing.sha3_256(data);
 		final BigInteger[] components = signer.generateSignature(messageHash);
 		
-		final Signature signature = new Signature(components[0], components[1]);
+		final Signature signature = Signature.create(components[0], components[1]);
 		final Signature canonicalSignature = makeSignatureCanonical(signature);
 		return makeRecoverableSignature(canonicalSignature, messageHash);
 	}
@@ -71,7 +71,7 @@ public class SecP256K1Signer implements Signer {
         if (recoverID == -1)
             throw new RuntimeException("Could not construct a recoverable key. This should never happen.");
         
-        return new Signature(signature.getR(), signature.getS(), (byte) (recoverID + 27));
+        return Signature.create(signature.getR(), signature.getS(), (byte) (recoverID + 27));
 	}
 	
 	private byte[] getUncompressedPublicKey() {
@@ -84,7 +84,7 @@ public class SecP256K1Signer implements Signer {
 		if (isCanonicalSignature(signature)) {
 			return signature;
 		} else {
-			return new Signature(signature.getR(), curve.getParams().getN().subtract(signature.getS()));
+			return Signature.create(signature.getR(), curve.getParams().getN().subtract(signature.getS()));
 		}
 	}
 

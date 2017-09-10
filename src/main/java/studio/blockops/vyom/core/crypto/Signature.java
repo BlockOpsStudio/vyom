@@ -14,30 +14,31 @@ import org.spongycastle.util.encoders.Hex;
 import com.google.common.base.Preconditions;
 
 /**
- * Digital Signature Interface
+ * ECDSA Signature
  */
 public class Signature {
 
 	private final BigInteger r;
 	private final BigInteger s;
 	private final byte v;
-
+	
 	/**
 	 * Creates a new signature.
 	 *
 	 * @param r The r-part of the signature.
 	 * @param s The s-part of the signature.
 	 */
-	public Signature(final BigInteger r, final BigInteger s) {
-		this(r, s, (byte) 0);
+	public static Signature create(final BigInteger r, final BigInteger s) {
+		validate(r, s, (byte) 0);
+		return new Signature(r, s, (byte) 0);
 	}
-
+	
 	/**
 	 * Creates a new signature.
 	 *
 	 * @param bytes The binary representation of the signature.
 	 */
-	public Signature(final byte[] bytes) {
+	public static Signature create(final byte[] bytes) {
 		Preconditions.checkNotNull(bytes);
 		Preconditions.checkArgument(
 				(64 != bytes.length),
@@ -47,44 +48,47 @@ public class Signature {
 		BigInteger s = new BigInteger(1, Arrays.copyOfRange(bytes, 32, 64));
 
 		validate(r, s, (byte) 0);
-		
-		this.r = r;
-		this.s = s;
-		this.v = 0;
+		return new Signature(r, s, (byte) 0);
 	}
-
+	
 	/**
 	 * Creates a new signature.
 	 *
 	 * @param r The binary representation of r.
 	 * @param s The binary representation of s.
 	 */
-	public Signature(final byte[] r, final byte[] s) {
+	public static Signature create(final byte[] r, final byte[] s) {
 		Preconditions.checkNotNull(r);
 		Preconditions.checkNotNull(s);
 		Preconditions.checkArgument(
 				(32 != r.length || 32 != s.length),
 				"binary signature representation of r and s must both have 32 bytes length");
 
-		this.r = new BigInteger(1, r);
-		this.s = new BigInteger(1, s);
-		this.v = 0;
+		final BigInteger r1 = new BigInteger(1, r);
+		final BigInteger s1 = new BigInteger(1, s);
+		
+		validate(r1, s1, (byte) 0);
+		return new Signature(r1, s1, (byte) 0);
 	}
-
+	
 	/**
 	 * Creates a new signature.
 	 *
 	 * @param r The r-part of the signature.
 	 * @param s The s-part of the signature.
 	 */
-	public Signature(final BigInteger r, final BigInteger s, final byte v) {
+	public static Signature create(final BigInteger r, final BigInteger s, final byte v) {
 		validate(r, s, v);
+		return new Signature(r, s, v);
+	}
+	
+	private Signature(final BigInteger r, final BigInteger s, final byte v) {
 		this.r = r;
 		this.s = s;
 		this.v = v;
 	}
 
-	private void validate(final BigInteger r, final BigInteger s, final byte v) {
+	private static void validate(final BigInteger r, final BigInteger s, final byte v) {
 		Preconditions.checkNotNull(r);
 		Preconditions.checkNotNull(s);
 		
