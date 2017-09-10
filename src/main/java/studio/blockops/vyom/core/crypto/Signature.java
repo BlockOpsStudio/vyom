@@ -77,6 +77,19 @@ public class Signature {
 	 * @param r The r-part of the signature.
 	 * @param s The s-part of the signature.
 	 */
+	public static Signature create(final String r, final String s, final byte v) {
+		final BigInteger r1 = new BigInteger(r);
+        final BigInteger s1 = new BigInteger(s);
+        validate(r1, s1, v);
+		return new Signature(r1, s1, v);
+	}
+	
+	/**
+	 * Creates a new signature.
+	 *
+	 * @param r The r-part of the signature.
+	 * @param s The s-part of the signature.
+	 */
 	public static Signature create(final BigInteger r, final BigInteger s, final byte v) {
 		validate(r, s, v);
 		return new Signature(r, s, v);
