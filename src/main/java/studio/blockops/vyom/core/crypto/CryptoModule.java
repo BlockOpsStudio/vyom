@@ -4,6 +4,9 @@ import java.security.Provider;
 
 import com.google.inject.AbstractModule;
 
+/**
+ * Base module for all crypto needs.
+ */
 public class CryptoModule extends AbstractModule {
 	
 	@Override
