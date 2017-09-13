@@ -2,11 +2,17 @@ package studio.blockops.vyom.core.crypto;
 
 import com.google.common.base.Preconditions;
 
+/**
+ * Holds {@link PrivateKey} and {@link PublicKey}
+ */
 public class KeyPair {
 	
 	private final PrivateKey privateKey;
 	private final PublicKey publicKey;
 	
+	/**
+	 * Factory method to create a {@link KeyPair}
+	 */
 	public static KeyPair create(PrivateKey privateKey, PublicKey publicKey) {
 		return new KeyPair(privateKey, publicKey);
 	}

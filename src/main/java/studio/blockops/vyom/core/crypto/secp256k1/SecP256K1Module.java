@@ -15,6 +15,9 @@ import studio.blockops.vyom.core.crypto.Curve;
 import studio.blockops.vyom.core.crypto.KeyGenerator;
 import studio.blockops.vyom.core.crypto.Signer;
 
+/**
+ * The SecP256K1 module.
+ */
 public class SecP256K1Module extends AbstractModule {
 	
 	@Override
@@ -26,6 +29,10 @@ public class SecP256K1Module extends AbstractModule {
 			.build(CryptoEngine.class));
 	}
 	
+	/**
+	 * Guice provides method to get {@link Curve} inta
+	 * @return A {@link SecP256K1Curve} singleton instance
+	 */
 	@Provides @Singleton
 	Curve provideCurve() {
 		final X9ECParameters params = SECNamedCurves.getByName("secp256k1");
