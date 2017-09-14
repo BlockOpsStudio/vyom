@@ -11,6 +11,7 @@ import org.ethereum.config.Constants;
 import org.ethereum.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 
 /**
@@ -21,7 +22,7 @@ public class Signature {
 	private final BigInteger r;
 	private final BigInteger s;
 	private final byte v;
-	
+
 	/**
 	 * Creates a new signature.
 	 *
@@ -32,7 +33,7 @@ public class Signature {
 		validate(r, s, (byte) 0);
 		return new Signature(r, s, (byte) 0);
 	}
-	
+
 	/**
 	 * Creates a new signature.
 	 *
@@ -50,7 +51,7 @@ public class Signature {
 		validate(r, s, (byte) 0);
 		return new Signature(r, s, (byte) 0);
 	}
-	
+
 	/**
 	 * Creates a new signature.
 	 *
@@ -66,11 +67,11 @@ public class Signature {
 
 		final BigInteger r1 = new BigInteger(1, r);
 		final BigInteger s1 = new BigInteger(1, s);
-		
+
 		validate(r1, s1, (byte) 0);
 		return new Signature(r1, s1, (byte) 0);
 	}
-	
+
 	/**
 	 * Creates a new signature.
 	 *
@@ -79,11 +80,11 @@ public class Signature {
 	 */
 	public static Signature create(final String r, final String s, final byte v) {
 		final BigInteger r1 = new BigInteger(r);
-        final BigInteger s1 = new BigInteger(s);
-        validate(r1, s1, v);
+		final BigInteger s1 = new BigInteger(s);
+		validate(r1, s1, v);
 		return new Signature(r1, s1, v);
 	}
-	
+
 	/**
 	 * Creates a new signature.
 	 *
@@ -94,7 +95,7 @@ public class Signature {
 		validate(r, s, v);
 		return new Signature(r, s, v);
 	}
-	
+
 	private Signature(final BigInteger r, final BigInteger s, final byte v) {
 		this.r = r;
 		this.s = s;
@@ -104,14 +105,14 @@ public class Signature {
 	private static void validate(final BigInteger r, final BigInteger s, final byte v) {
 		Preconditions.checkNotNull(r);
 		Preconditions.checkNotNull(s);
-		
+
 		Preconditions.checkArgument(v == 0 || v == 27 || v == 28, "Not a valid value for v");
 
-        Preconditions.checkArgument(isMoreThan(r, BigInteger.ONE), "r cannot be less than 1");
-        Preconditions.checkArgument(isMoreThan(s, BigInteger.ONE), "s cannot be less than 1");
+		Preconditions.checkArgument(isMoreThan(r, BigInteger.ONE), "r cannot be less than 1");
+		Preconditions.checkArgument(isMoreThan(s, BigInteger.ONE), "s cannot be less than 1");
 
-        Preconditions.checkArgument(isLessThan(r, Constants.getSECP256K1N()), "r cannot be more than max value" + Constants.getSECP256K1N());
-        Preconditions.checkArgument(isLessThan(s, Constants.getSECP256K1N()), "s cannot be more than max value" + Constants.getSECP256K1N());
+		Preconditions.checkArgument(isLessThan(r, Constants.getSECP256K1N()), "r cannot be more than max value" + Constants.getSECP256K1N());
+		Preconditions.checkArgument(isLessThan(s, Constants.getSECP256K1N()), "s cannot be more than max value" + Constants.getSECP256K1N());
 	}
 
 	/**
@@ -165,14 +166,20 @@ public class Signature {
 	 * @return a big-endian 65-byte representation of the signature with recoverID.
 	 */
 	public byte[] getBytes() {
-        final byte fixedV = this.v >= 27
-                ? (byte) (this.v - 27)
-                :this.v;
+		final byte fixedV = (this.v>=27) ? (byte) (this.v - 27) : this.v;
 
-        return ByteUtil.merge(
-                ByteUtil.bigIntegerToBytes(this.r),
-                ByteUtil.bigIntegerToBytes(this.s),
-                new byte[]{fixedV});
+		return ByteUtil.merge(
+				ByteUtil.bigIntegerToBytes(this.r),
+				ByteUtil.bigIntegerToBytes(this.s),
+				new byte[]{fixedV});
+	}
+
+	/**
+	 * Returns hex representation of this Signature
+	 * @return Hex representation of this Signature
+	 */
+	public String toHexString() {
+		return Hex.toHexString(getBytes());
 	}
 
 	@Override
@@ -191,6 +198,10 @@ public class Signature {
 
 	@Override
 	public String toString() {
-		return Hex.toHexString(getBytes());
+		return MoreObjects.toStringHelper(this)
+				.add("r", r)
+				.add("s", s)
+				.add("v", v)
+				.toString();
 	}
 }
