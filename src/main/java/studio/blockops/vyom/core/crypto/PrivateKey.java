@@ -1,17 +1,21 @@
 package studio.blockops.vyom.core.crypto;
 
 import java.math.BigInteger;
-import java.util.Locale;
+
+import org.ethereum.util.ByteUtil;
+import org.spongycastle.util.encoders.DecoderException;
+import org.spongycastle.util.encoders.Hex;
 
 import com.google.common.base.Preconditions;
-
-import studio.blockops.vyom.core.utils.BaseCodec;
 
 /**
  * Represents a private key.
  */
 public final class PrivateKey {
 
+	/**
+	 * The raw private key value
+	 */
 	private final BigInteger value;
 	
 	/**
@@ -49,8 +53,8 @@ public final class PrivateKey {
 	public static PrivateKey createFromHexString(final String value) {
 		try {
 			Preconditions.checkNotNull(value);
-			return new PrivateKey(new BigInteger(1, BaseCodec.decodeBase16(value.toLowerCase(Locale.US))));
-		} catch (final IllegalArgumentException e) {
+			return new PrivateKey(new BigInteger(1, Hex.decode(value)));
+		} catch (final DecoderException e) {
 			throw new CryptoException(e);
 		}
 	}
@@ -59,6 +63,10 @@ public final class PrivateKey {
 		this.value = value;
 	}
 	
+	/**
+	 * Returns raw private key value
+	 * @return raw private key value as {@link BigInteger}
+	 */
 	public BigInteger getRaw() {
 		return this.value;
 	}
@@ -86,7 +94,7 @@ public final class PrivateKey {
 	
 	@Override
 	public String toString() {
-		return BaseCodec.encodeBase16(this.value.toByteArray());
+		return Hex.toHexString(ByteUtil.bigIntegerToBytes(this.value));
 	}
 	
 }
