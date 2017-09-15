@@ -5,6 +5,9 @@ import java.security.Security;
 
 import org.spongycastle.jce.provider.BouncyCastleProvider;
 
+/**
+ * A Provider for {@link org.spongycastle.jce.provider.BouncyCastleProvider}
+ */
 public class SpongyCastleInstaller implements com.google.inject.Provider<Provider> {
 	
 	@Override
@@ -18,5 +21,4 @@ public class SpongyCastleInstaller implements com.google.inject.Provider<Provide
         
         return provider;
 	}
-
 }

@@ -31,6 +31,9 @@ import studio.blockops.vyom.core.crypto.Curve;
 import studio.blockops.vyom.core.crypto.PrivateKey;
 import studio.blockops.vyom.core.crypto.PublicKey;
 
+/**
+ * SecP256K1 implementation of {@link BlockCipher}
+ */
 public class SecP256K1BlockCipher implements BlockCipher {
 	
 	private static final byte[] d = new byte[] { };
@@ -38,10 +41,19 @@ public class SecP256K1BlockCipher implements BlockCipher {
 	private static final int KEY_SIZE = 128;
 	private static final IESParameters IES_PARAMETERS = new IESWithCipherParameters(d, e, KEY_SIZE, KEY_SIZE);
 
+	/**
+	 * A random number generator
+	 */
 	private static final SecureRandom RANDOM = new SecureRandom();
 	
+	/**
+	 * A {@link SecP256K1Curve} instance
+	 */
 	private final Curve curve;
 	
+	/**
+	 * Ethereum IES Engine
+	 */
 	private final EthereumIESEngine iesEngine;
 
 	@Inject

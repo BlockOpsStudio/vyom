@@ -13,6 +13,9 @@ import com.google.common.base.Preconditions;
  */
 public final class PrivateKey {
 
+	/**
+	 * The raw private key value
+	 */
 	private final BigInteger value;
 	
 	/**
@@ -60,6 +63,10 @@ public final class PrivateKey {
 		this.value = value;
 	}
 	
+	/**
+	 * Returns raw private key value
+	 * @return raw private key value as {@link BigInteger}
+	 */
 	public BigInteger getRaw() {
 		return this.value;
 	}

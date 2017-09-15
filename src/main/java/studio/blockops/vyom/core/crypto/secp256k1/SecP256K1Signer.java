@@ -27,8 +27,14 @@ import studio.blockops.vyom.core.crypto.Signer;
  */
 public class SecP256K1Signer implements Signer {
 	
+	/**
+	 * A {@link SecP256K1Curve} instance
+	 */
 	private final Curve curve;
 	
+	/**
+	 * A {@link KeyPair} to hold public private key pair 
+	 */
 	private final KeyPair keyPair;
 
 	@Inject

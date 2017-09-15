@@ -19,8 +19,19 @@ import com.google.common.base.Preconditions;
  */
 public class Signature {
 
+	/**
+	 * The r-part of the signature.
+	 */
 	private final BigInteger r;
+	
+	/**
+	 * The s-part of the signature.
+	 */
 	private final BigInteger s;
+	
+	/**
+	 * The v-part (Recovery ID) of the signature.
+	 */
 	private final byte v;
 
 	/**
@@ -77,6 +88,7 @@ public class Signature {
 	 *
 	 * @param r The r-part of the signature.
 	 * @param s The s-part of the signature.
+	 * @param v The v-part of the signature.
 	 */
 	public static Signature create(final String r, final String s, final byte v) {
 		final BigInteger r1 = new BigInteger(r);

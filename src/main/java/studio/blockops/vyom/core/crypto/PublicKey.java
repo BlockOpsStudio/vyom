@@ -14,6 +14,9 @@ public final class PublicKey {
 
 	private static final int COMPRESSED_KEY_SIZE = 33;
 
+	/**
+	 * The raw public key value
+	 */
 	private final byte[] value;
 	
 	/**
@@ -46,6 +49,10 @@ public final class PublicKey {
 		this.value = value;
 	}
 	
+	/**
+	 * Returns raw private key value
+	 * @return raw private key value as byte array
+	 */
 	public byte[] getRaw() {
 		return this.value;
 	}

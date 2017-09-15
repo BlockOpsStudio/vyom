@@ -13,6 +13,11 @@ public class SecP256K1Curve implements Curve {
 
 	private final ECDomainParameters params;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param params {@link ECDomainParameters}
+	 */
 	SecP256K1Curve(final ECDomainParameters params) {
 		this.params = params;
 	}

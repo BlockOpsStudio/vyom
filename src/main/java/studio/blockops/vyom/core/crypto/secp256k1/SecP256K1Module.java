@@ -16,7 +16,7 @@ import studio.blockops.vyom.core.crypto.KeyGenerator;
 import studio.blockops.vyom.core.crypto.Signer;
 
 /**
- * The SecP256K1 module.
+ * The SecP256K1 guice module.
  */
 public class SecP256K1Module extends AbstractModule {
 	

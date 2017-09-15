@@ -24,8 +24,14 @@ import studio.blockops.vyom.core.crypto.PublicKey;
  */
 public class SecP256K1KeyGenerator implements KeyGenerator {
 
+	/**
+	 * Random Number Generator
+	 */
 	private static final SecureRandom RANDOM = new SecureRandom();
 	
+	/**
+	 * A {@link SecP256K1Curve} instance
+	 */
 	private final Curve curve;
 
 	@Inject

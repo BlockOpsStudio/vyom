@@ -9,8 +9,14 @@ import com.google.common.base.Preconditions;
 
 import studio.blockops.vyom.core.crypto.CryptoException;
 
+/**
+ * A wallet address
+ */
 public class Address {
 
+	/**
+	 * Raw address value
+	 */
 	private final byte[] value;
 	
 	/**
@@ -42,6 +48,11 @@ public class Address {
 		this.value = value;
 	}
 
+	/**
+	 * Returns raw address value
+	 * 
+	 * @return raw address value as byte array
+	 */
 	public byte[] getRaw() {
 		return value;
 	}
