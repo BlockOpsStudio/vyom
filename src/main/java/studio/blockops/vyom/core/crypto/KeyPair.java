@@ -7,7 +7,14 @@ import com.google.common.base.Preconditions;
  */
 public class KeyPair {
 	
+	/**
+	 * The Private Key 
+	 */
 	private final PrivateKey privateKey;
+	
+	/**
+	 * The Public Key
+	 */
 	private final PublicKey publicKey;
 	
 	/**

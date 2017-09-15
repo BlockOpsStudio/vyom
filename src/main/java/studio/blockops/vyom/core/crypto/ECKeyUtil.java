@@ -11,6 +11,9 @@ import org.spongycastle.math.ec.ECPoint;
 
 import com.google.common.base.Preconditions;
 
+/**
+ * Static Utility methods for ECKey
+ */
 public class ECKeyUtil {
 
     /**
