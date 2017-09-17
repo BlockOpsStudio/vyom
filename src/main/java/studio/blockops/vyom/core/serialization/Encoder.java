@@ -6,6 +6,20 @@ import java.util.Collection;
 public interface Encoder {
 
 	/**
+	 * Encodes a 8-bit byte value.
+	 *
+	 * @param b The value.
+	 */
+	void encodeByte(final byte b);
+
+	/**
+	 * Encodes a 16-bit short value.
+	 *
+	 * @param s The value.
+	 */
+	void encodeShort(final short s);
+
+	/**
 	 * Encodes a 32-bit integer value.
 	 *
 	 * @param i The value.

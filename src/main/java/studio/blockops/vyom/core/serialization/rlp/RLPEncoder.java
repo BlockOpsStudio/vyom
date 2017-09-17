@@ -14,6 +14,22 @@ public final class RLPEncoder implements Encoder, RLPParameters {
 	public RLPEncoder() {
 		this.output = new ByteArrayOutputStream();
 	}
+	
+	public final byte[] getEncoded() {
+		return output.toByteArray();
+	}
+
+	@Override
+	public void encodeByte(byte b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void encodeShort(short s) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void encodeInt(int i) {
