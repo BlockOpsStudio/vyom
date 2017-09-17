@@ -25,12 +25,6 @@ public final class RLPDecoder implements Decoder, RLPParameters {
 	}
 
 	@Override
-	public void decodeDouble() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void decodeBigInteger() {
 		// TODO Auto-generated method stub
 

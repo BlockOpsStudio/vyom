@@ -13,11 +13,6 @@ public interface Decoder {
 	void decodeLong();
 
 	/**
-	 * Decodes a 64-bit double value.
-	 */
-	void decodeDouble();
-
-	/**
 	 * Decodes a BigInteger value.
 	 */
 	void decodeBigInteger();

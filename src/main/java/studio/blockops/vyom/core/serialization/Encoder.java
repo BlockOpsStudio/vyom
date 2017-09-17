@@ -34,13 +34,6 @@ public interface Encoder {
 	void encodeLong(final long l);
 
 	/**
-	 * Encodes a 64-bit double value.
-	 *
-	 * @param d The value.
-	 */
-	void encodeDouble(final double d);
-
-	/**
 	 * Encodes a BigInteger value.
 	 *
 	 * @param i The value.

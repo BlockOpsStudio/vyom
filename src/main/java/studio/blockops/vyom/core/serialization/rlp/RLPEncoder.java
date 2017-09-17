@@ -44,12 +44,6 @@ public final class RLPEncoder implements Encoder, RLPParameters {
 	}
 
 	@Override
-	public void encodeDouble(double d) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void encodeBigInteger(BigInteger i) {
 		// TODO Auto-generated method stub
 		
