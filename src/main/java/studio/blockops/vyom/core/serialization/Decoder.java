@@ -3,6 +3,16 @@ package studio.blockops.vyom.core.serialization;
 public interface Decoder {
 
 	/**
+	 * Decodes a 8-bit byte value.
+	 */
+	void decodeByte();
+
+	/**
+	 * Decodes a 16-bit short value.
+	 */
+	void decodeShort();
+
+	/**
 	 * Decodes a 32-bit integer value.
 	 */
 	void decodeInt();

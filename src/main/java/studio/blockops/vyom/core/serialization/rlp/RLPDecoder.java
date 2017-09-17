@@ -13,6 +13,18 @@ public final class RLPDecoder implements Decoder, RLPParameters {
 	}
 
 	@Override
+	public void decodeByte() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void decodeShort() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void decodeInt() {
 		// TODO Auto-generated method stub
 
