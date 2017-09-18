@@ -1,11 +1,13 @@
 package studio.blockops.vyom.core.serialization;
 
+import java.io.IOException;
+
 public interface Decoder {
 
 	/**
 	 * Decodes a 8-bit byte value.
 	 */
-	void decodeByte();
+	void decodeByte(int index) throws IOException;
 
 	/**
 	 * Decodes a 16-bit short value.

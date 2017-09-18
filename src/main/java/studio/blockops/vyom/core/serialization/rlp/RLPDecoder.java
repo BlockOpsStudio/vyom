@@ -1,20 +1,34 @@
 package studio.blockops.vyom.core.serialization.rlp;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import studio.blockops.vyom.core.serialization.Decoder;
 
 public final class RLPDecoder implements Decoder, RLPParameters {
 	
 	private final ByteArrayInputStream input;
+	private byte [] data ; 
 	
 	public RLPDecoder(final byte[] data) {
 		input = new ByteArrayInputStream(data);
+		this.data = data;
 	}
 
 	@Override
-	public void decodeByte() {
-		// TODO Auto-generated method stub
+	public void decodeByte(int index) throws IOException {
+		 // null item
+        if ((this.data[index] & 0xFF) == OFFSET_SHORT_ITEM) {
+        	input.read(new byte[]  {(byte) (this.data[index] - OFFSET_SHORT_ITEM)});
+        }
+        // single byte item
+        if ((this.data[index] & 0xFF) < OFFSET_SHORT_ITEM) {
+        	input.read(new byte[]  {(byte) (this.data[index])});
+        }
+        // single byte item
+        if ((this.data[index] & 0xFF) == OFFSET_SHORT_ITEM + 1) {
+        	input.read(new byte[]  {(byte) (this.data[index +1])});
+        }
 		
 	}
 
