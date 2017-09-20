@@ -316,11 +316,62 @@ public class RLPEncoderTest {
 		}
 	}
 
+	@RunWith(JukitoRunner.class)
+	public static class EncodeStringTest extends RLPEncoderTest {
+
+		public static class Module extends JukitoModule {
+
+			@Override
+			protected void configureTest() {
+				bindManyInstances(StringTestData.class,
+						new StringTestData("dog", new byte[]{(byte) 0x83, 'd','o','g'}),
+						new StringTestData(
+								"Lorem ipsum dolor sit amet, consectetur adipisicing elit", 
+								new byte[]{(byte) 0xb8, (byte) 0x38, 'L','o','r','e','m',' ','i','p','s','u','m',' ','d','o','l','o','r',' ','s','i','t',' ','a','m','e','t',',',' ','c','o','n','s','e','c','t','e','t','u','r',' ','a','d','i','p','i','s','i','c','i','n','g',' ','e','l','i','t'}),
+						
+						/* ethereumJ Tests */						
+						new StringTestData(
+								"EthereumJ Client",
+								"90 45 74 68 65 72 65 75 6D 4A 20 43 6C 69 65 6E 74"),
+						new StringTestData(
+								"Ethereum(++)/ZeroGox/v0.5.0/ncurses/Linux/g++", 
+								"AD 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B"),
+						new StringTestData(
+								"Ethereum(++)/ZeroGox/v0.5.0/ncurses/Linux/g++Ethereum(++)/ZeroGox/v0.5.0/ncurses/Linux/g++", 
+								"B8 5A 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B"));
+			}
+		}
+
+		@Test
+		public void encodeStringTest(@All StringTestData data) {
+			encoder.encodeString(data.input);
+
+			byte[] actual = encoder.getEncoded();
+
+			assertArrayEquals(data.expected, actual);
+		}
+
+		private static class StringTestData extends TestData {
+			private final String input;
+			private StringTestData(String input, String expected) {
+				super(expected);
+				this.input = input;
+			}
+			private StringTestData(String input, byte[] expected) {
+				super(expected);
+				this.input = input;
+			}
+		}
+	}
+
 	private static abstract class TestData {
 		protected final byte[] expected;
 		private TestData(String expected) {
 			expected = expected.replaceAll("\\s","");		// Remove all whitespaces
 			this.expected = ByteUtil.hexStringToBytes(expected);
+		}
+		private TestData(byte[] expected) {
+			this.expected = expected;
 		}
 	}
 
