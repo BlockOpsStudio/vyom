@@ -5,8 +5,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.math.BigInteger;
 
-import javax.inject.Inject;
-
 import org.ethereum.util.ByteUtil;
 import org.jukito.All;
 import org.jukito.JukitoModule;
@@ -15,91 +13,112 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-@RunWith(Enclosed.class)
-public class RLPEncoderTest {
+import studio.blockops.vyom.core.serialization.DecoderException;
 
-	@Inject
-	protected RLPEncoder encoder;
+@RunWith(Enclosed.class)
+public class RLPDecoderTest {
 
 	@RunWith(JukitoRunner.class)
-	public static class EncodeByteTest extends RLPEncoderTest {
+	public static class DecodeByteTest extends RLPDecoderTest {
 
 		public static class Module extends JukitoModule {
 
 			@Override
 			protected void configureTest() {
-				bindManyInstances(ByteTestData.class,
+				bindManyNamedInstances(ByteTestData.class, "t1",
 						new ByteTestData((byte) 0, "80"),
 						new ByteTestData((byte) 120, "78"),
 						new ByteTestData((byte) 127, "7F"),
 						new ByteTestData((byte) 128, "81 80"),
 						new ByteTestData((byte) 143, "81 8F"));
+				
+				bindManyNamedInstances(ByteTestData.class, "ex",
+						new ByteTestData((byte) 0, ""),
+						new ByteTestData((byte) 0, "82 76 5F"),
+						new ByteTestData((byte) 0, "86 0B F0 51 38 51 6E"));
 			}
 		}
 
 		@Test
-		public void encodeByteTest(@All ByteTestData data) {
-			encoder.encodeByte(data.input);
+		public void decodeByteTest(@All("t1") ByteTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
 
-			byte[] actual = encoder.getEncoded();
+			byte actual = decoder.decodeByte();
 
 			assertThat(actual, equalTo(data.expected));
 		}
+		
+		@Test(expected = DecoderException.class)
+		public void decodeByteExceptionTest(@All("ex") ByteTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
+			decoder.decodeByte();
+		}
 
 		private static class ByteTestData extends TestData {
-			private final byte input;
-			private ByteTestData(byte input, String expected) {
-				super(expected);
-				this.input = input;
+			private final byte expected;
+			private ByteTestData(byte expected, String input) {
+				super(input);
+				this.expected = expected;
 			}
 		}
 	}
 
 	@RunWith(JukitoRunner.class)
-	public static class EncodeShortTest extends RLPEncoderTest {
+	public static class DecodeShortTest extends RLPDecoderTest {
 
 		public static class Module extends JukitoModule {
 
 			@Override
 			protected void configureTest() {
-				bindManyInstances(ShortTestData.class,
+				bindManyNamedInstances(ShortTestData.class, "t1",
 						new ShortTestData((short) 0, "80"),
 						new ShortTestData((short) 120, "78"),
 						new ShortTestData((short) 127, "7F"),
-						new ShortTestData((short) 128, "81 80"),
+                        new ShortTestData((short) 128, "81 80"),
 
 						new ShortTestData((short) 30303, "82 76 5F"),
 						new ShortTestData((short) 20202, "82 4E EA"),
 						new ShortTestData((short) 40202, "82 9D 0A"));
+				
+				bindManyNamedInstances(ShortTestData.class, "ex",
+						new ShortTestData((short) 0, ""),
+						new ShortTestData((short) 0, "83 01 00 00"),
+						new ShortTestData((short) 0, "86 0B F0 51 38 51 6E"));
 			}
 		}
 
 		@Test
-		public void encodeShortTest(@All ShortTestData data) {
-			encoder.encodeShort(data.input);
+		public void decodeShortTest(@All("t1") ShortTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
 
-			byte[] actual = encoder.getEncoded();
+			short actual = decoder.decodeShort();
 
 			assertThat(actual, equalTo(data.expected));
 		}
+		
+		@Test(expected = DecoderException.class)
+		public void decodeShortExceptionTest(@All("ex") ShortTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
+			decoder.decodeShort();
+		}
 
 		private static class ShortTestData extends TestData {
-			private final short input;
-			private ShortTestData(short input, String expected) {
-				super(expected);
-				this.input = input;
+			private final short expected;
+			private ShortTestData(short expected, String input) {
+				super(input);
+				this.expected = expected;
 			}
 		}
 	}
 
 	@RunWith(JukitoRunner.class)
-	public static class EncodeIntTest extends RLPEncoderTest {
+	public static class DecodeIntTest extends RLPDecoderTest {
 
 		public static class Module extends JukitoModule {
 
 			@Override
 			protected void configureTest() {
-				bindManyInstances(IntTestData.class,
+				bindManyNamedInstances(IntTestData.class, "t1",
 						new IntTestData(0, "80"),
 						new IntTestData(120, "78"),
 						new IntTestData(127, "7F"),
@@ -114,35 +133,47 @@ public class RLPEncoderTest {
 						new IntTestData(Integer.MAX_VALUE, "84 7F FF FF FF"),
 
 						new IntTestData(0xFFFFFFFF, "84 FF FF FF FF"));
+				
+				bindManyNamedInstances(IntTestData.class, "ex",
+						new IntTestData(0, ""),
+						new IntTestData(0, "85 F0 51 38 51 6E"),
+						new IntTestData(0, "86 0B F0 51 38 51 6E"),
+						new IntTestData(0, "87 6B D9 D7 19 20 9B F4"));
 			}
 		}
 
 		@Test
-		public void encodeIntTest(@All IntTestData data) {
-			encoder.encodeInt(data.input);
+		public void decodeIntTest(@All("t1") IntTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
 
-			byte[] actual = encoder.getEncoded();
+			int actual = decoder.decodeInt();
 
 			assertThat(actual, equalTo(data.expected));
 		}
+		
+		@Test(expected = DecoderException.class)
+		public void decodeIntExceptionTest(@All("ex") IntTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
+			decoder.decodeInt();
+		}
 
 		private static class IntTestData extends TestData {
-			private final int input;
-			private IntTestData(int input, String expected) {
-				super(expected);
-				this.input = input;
+			private final int expected;
+			private IntTestData(int expected, String input) {
+				super(input);
+				this.expected = expected;
 			}
 		}
 	}
 
 	@RunWith(JukitoRunner.class)
-	public static class EncodeLongTest extends RLPEncoderTest {
+	public static class DecodeLongTest extends RLPDecoderTest {
 
 		public static class Module extends JukitoModule {
 
 			@Override
 			protected void configureTest() {
-				bindManyInstances(LongTestData.class,
+				bindManyNamedInstances(LongTestData.class, "t1",
 						new LongTestData(0L, "80"),
 						new LongTestData(120L, "78"),
 						new LongTestData(127L, "7F"),
@@ -168,36 +199,49 @@ public class RLPEncoderTest {
 						new LongTestData(0xFFFF800000000000L,	   "88 FF FF 80 00 00 00 00 00"),
 						new LongTestData(0xFF80000000000000L,	   "88 FF 80 00 00 00 00 00 00"),
 						new LongTestData(0xFFFFFFFFFFFFFFFFL,	   "88 FF FF FF FF FF FF FF FF"));
+				
+				bindManyNamedInstances(LongTestData.class, "ex",
+						new LongTestData(0L, ""),
+						new LongTestData(0L, "89 3C C1 09 3F 21 2C 0F 7D 4B"),
+						new LongTestData(0L, "9A 0F 7D 4B D5 CC 6C B1 6B D9 19"),
+						new LongTestData(0L, "9B 6B D9 D7 19 20 9B F4 08 77 A6 F7"),
+						new LongTestData(0L, "9C 08 77 A6 F7 7F 0D DA 6B 08 77 A6 F7 7F"));
 			}
 		}
 
 		@Test
-		public void encodeLongTest(@All LongTestData data) {
-			encoder.encodeLong(data.input);
+		public void decodeLongTest(@All("t1") LongTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
 
-			byte[] actual = encoder.getEncoded();
+			long actual = decoder.decodeLong();
 
 			assertThat(actual, equalTo(data.expected));
 		}
+		
+		@Test(expected = DecoderException.class)
+		public void decodeLongExceptionTest(@All("ex") LongTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
+			decoder.decodeLong();
+		}
 
 		private static class LongTestData extends TestData {
-			private final long input;
-			private LongTestData(long input, String expected) {
-				super(expected);
-				this.input = input;
+			private final long expected;
+			private LongTestData(long expected, String input) {
+				super(input);
+				this.expected = expected;
 			}
 		}
 	}
 
 	@RunWith(JukitoRunner.class)
-	public static class EncodeBigIntegerTest extends RLPEncoderTest {
+	public static class DecodeBigIntegerTest extends RLPDecoderTest {
 
 		public static class Module extends JukitoModule {
 
 			@Override
 			protected void configureTest() {
-				bindManyInstances(BigIntegerTestData.class,
-						BigIntegerTestData.fromDecimal("0", "00"),
+				bindManyNamedInstances(BigIntegerTestData.class, "t1",
+						BigIntegerTestData.fromDecimal("0", "80"),
 						BigIntegerTestData.fromDecimal("120", "78"),
 						BigIntegerTestData.fromDecimal("127", "7F"),
 						BigIntegerTestData.fromDecimal("128", "81 80"),
@@ -233,41 +277,55 @@ public class RLPEncoderTest {
 						BigIntegerTestData.fromHex(
 								"7b45018451b7f0f5565f4a066fad176a79819f04a3de7cf49b9a0099e4948d767f5f8",
 								"A3 07b45018451b7f0f5565f4a066fad176a79819f04a3de7cf49b9a0099e4948d767f5f8"));
+				
+				bindManyNamedInstances(BigIntegerTestData.class, "ex",
+						BigIntegerTestData.fromHex("0", ""),
+						BigIntegerTestData.fromHex("0", "A1 07b45018451b7f"),
+						BigIntegerTestData.fromHex("0", "C0 58e14dd5e30ffd5543220f03ee92cbcc7a692a9e"),
+						BigIntegerTestData.fromHex("0", "C2 0a07989f9261f4c8a8b46ec5d98697c4a79e877c2650"),
+						BigIntegerTestData.fromHex("0", "C4 de0db635daed5b017f273e762ee5c4c9f34a5d33e4107a"),
+						BigIntegerTestData.fromHex("0", "C6 0406e6aee1efb660ceb3d2aa6f6ec4eea1c1439fcff6d4a0c1"));
 			}
 		}
 
 		@Test
-		public void encodeBigIntegerTest(@All BigIntegerTestData data) {
-			encoder.encodeBigInteger(data.input);
+		public void decodeBigIntegerTest(@All("t1") BigIntegerTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
 
-			byte[] actual = encoder.getEncoded();
+			BigInteger actual = decoder.decodeBigInteger();
 
 			assertThat(actual, equalTo(data.expected));
 		}
+		
+		@Test(expected = DecoderException.class)
+		public void decodeBigIntegerExceptionTest(@All("ex") BigIntegerTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
+			decoder.decodeBigInteger();
+		}
 
 		private static class BigIntegerTestData extends TestData {
-			private final BigInteger input;
-			private static BigIntegerTestData fromDecimal(String input, String expected) {
-				return new BigIntegerTestData(new BigInteger(input), expected);
+			private final BigInteger expected;
+			private static BigIntegerTestData fromDecimal(String expected, String input) {
+				return new BigIntegerTestData(new BigInteger(expected), input);
 			}
-			private static BigIntegerTestData fromHex(String input, String expected) {
-				return new BigIntegerTestData(new BigInteger(input, 16), expected);
+			private static BigIntegerTestData fromHex(String expected, String input) {
+				return new BigIntegerTestData(new BigInteger(expected, 16), input);
 			}
-			private BigIntegerTestData(BigInteger input, String expected) {
-				super(expected);
-				this.input = input;
+			private BigIntegerTestData(BigInteger expected, String input) {
+				super(input);
+				this.expected = expected;
 			}
 		}
 	}
 
 	@RunWith(JukitoRunner.class)
-	public static class EncodeBytesTest extends RLPEncoderTest {
+	public static class DecodeBytesTest extends RLPDecoderTest {
 
 		public static class Module extends JukitoModule {
 
 			@Override
 			protected void configureTest() {
-				bindManyInstances(BytesTestData.class,
+				bindManyNamedInstances(BytesTestData.class, "t1",
 						new BytesTestData("4e0117f398a9a9f894a4d49c446e41729ff0cde9bc9",          "96 04e0117f398a9a9f894a4d49c446e41729ff0cde9bc9"),
 						new BytesTestData("87205cf58319be7eb1c6fccc78d0ea15e655ddb519ffe9",       "97 87205cf58319be7eb1c6fccc78d0ea15e655ddb519ffe9"),
 						new BytesTestData("6b19c2ceb52227ceedd4b2f7730772c3364e55055252b8739",    "99 06b19c2ceb52227ceedd4b2f7730772c3364e55055252b8739"),
@@ -299,7 +357,7 @@ public class RLPEncoderTest {
 						new BytesTestData("7F", "7F"),
 
 						// - Two bytes
-						new BytesTestData("128", "81 80"),
+						new BytesTestData("80", "81 80"),
 
 						// - Empty byte array
 						new BytesTestData("", "80"),
@@ -307,36 +365,50 @@ public class RLPEncoderTest {
 						new BytesTestData(
 								"ce73660a06626c1b3fda7b18ef7ba3ce17b6bf604f9541d3c6c654b7ae88b239407f659c78f419025d785727ed017b6add21952d7e12007373e321dbc31824ba",
 								"B8 40 ce73660a06626c1b3fda7b18ef7ba3ce17b6bf604f9541d3c6c654b7ae88b239407f659c78f419025d785727ed017b6add21952d7e12007373e321dbc31824ba"));
+				
+				bindManyNamedInstances(BytesTestData.class, "ex",
+						new BytesTestData("", ""),
+						new BytesTestData("", "97 87205cf58319be7eb1c6fccc78d0ea"),
+						new BytesTestData("", "C0 04e0117f398a9a9f894a4d49c446e41729ff0cde9bc9"),
+						new BytesTestData("", "C2 87205cf58319be7eb1c6fccc78d0ea15e655ddb519ffe9"),
+						new BytesTestData("", "C4 06b19c2ceb52227ceedd4b2f7730772c3364e55055252b8739"),
+						new BytesTestData("", "C6 63a64bafaebe60847eb13f8be2be0c7747f36359f927d47261b3"));
 			}
 		}
 
 		@Test
-		public void encodeBytesTest(@All BytesTestData data) {
-			encoder.encodeBytes(data.input);
+		public void decodeBytesTest(@All("t1") BytesTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
 
-			byte[] actual = encoder.getEncoded();
+			byte[] actual = decoder.decodeBytes();
 
 			assertThat(actual, equalTo(data.expected));
 		}
+		
+		@Test(expected = DecoderException.class)
+		public void decodeBytesExceptionTest(@All("ex") BytesTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
+			decoder.decodeBytes();
+		}
 
 		private static class BytesTestData extends TestData {
-			private final byte[] input;
-			private BytesTestData(String input, String expected) {
-				super(expected);
-				input = input.replaceAll("\\s","");	 // Remove all whitespaces
-				this.input = ByteUtil.hexStringToBytes(input);
+			private final byte[] expected;
+			private BytesTestData(String expected, String input) {
+				super(input);
+				expected = expected.replaceAll("\\s","");	  // Remove all whitespaces
+				this.expected = ByteUtil.hexStringToBytes(expected);
 			}
 		}
 	}
 
 	@RunWith(JukitoRunner.class)
-	public static class EncodeStringTest extends RLPEncoderTest {
+	public static class DecodeStringTest extends RLPDecoderTest {
 
 		public static class Module extends JukitoModule {
 
 			@Override
 			protected void configureTest() {
-				bindManyInstances(StringTestData.class,
+				bindManyNamedInstances(StringTestData.class, "t1",
 						new StringTestData("dog", new byte[]{(byte) 0x83, 'd','o','g'}),
 						new StringTestData(
 								"Lorem ipsum dolor sit amet, consectetur adipisicing elit",
@@ -351,40 +423,55 @@ public class RLPEncoderTest {
 								"AD 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B"),
 						new StringTestData(
 								"Ethereum(++)/ZeroGox/v0.5.0/ncurses/Linux/g++Ethereum(++)/ZeroGox/v0.5.0/ncurses/Linux/g++",
-								"B8 5A 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B"));
+								"B8 5A 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B"));				
+
+				bindManyNamedInstances(StringTestData.class, "ex",
+						new StringTestData("", new byte[]{}),
+						new StringTestData(
+								"Lorem ipsum dolor sit amet, consectetur adipisicing elit",
+								new byte[]{(byte) 0xb8, (byte) 0x38, 'L','o','r','e','m',' ','i','p','s','u','m'}),
+						new StringTestData(
+								"Failed test string",
+								new byte[]{(byte) 0xca, (byte) 0x38, 'F','a','i','l','e','d',' ','t','e','s','t',' ','s','t','r','i','n','g'}));
 			}
 		}
 
 		@Test
-		public void encodeStringTest(@All StringTestData data) {
-			encoder.encodeString(data.input);
+		public void decodeStringTest(@All("t1") StringTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
 
-			byte[] actual = encoder.getEncoded();
+			String actual = decoder.decodeString();
 
 			assertThat(actual, equalTo(data.expected));
 		}
+		
+		@Test(expected = DecoderException.class)
+		public void decodeStringExceptionTest(@All("ex") StringTestData data) {
+			final RLPDecoder decoder = new RLPDecoder(data.input);
+			decoder.decodeString();
+		}
 
 		private static class StringTestData extends TestData {
-			private final String input;
-			private StringTestData(String input, String expected) {
-				super(expected);
-				this.input = input;
+			private final String expected;
+			private StringTestData(String expected, String input) {
+				super(input);
+				this.expected = expected;
 			}
-			private StringTestData(String input, byte[] expected) {
-				super(expected);
-				this.input = input;
+			private StringTestData(String expected, byte[] input) {
+				super(input);
+				this.expected = expected;
 			}
 		}
 	}
 
 	private static abstract class TestData {
-		protected final byte[] expected;
-		private TestData(String expected) {
-			expected = expected.replaceAll("\\s","");	   // Remove all whitespaces
-			this.expected = ByteUtil.hexStringToBytes(expected);
+		protected final byte[] input;
+		private TestData(String input) {
+			input = input.replaceAll("\\s","");  // Remove all whitespaces
+			this.input = ByteUtil.hexStringToBytes(input);
 		}
-		private TestData(byte[] expected) {
-			this.expected = expected;
+		private TestData(byte[] input) {
+			this.input = input;
 		}
 	}
 
