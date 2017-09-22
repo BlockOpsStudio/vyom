@@ -31,7 +31,7 @@ public class RLPDecoderTest {
 						new ByteTestData((byte) 127, "7F"),
 						new ByteTestData((byte) 128, "81 80"),
 						new ByteTestData((byte) 143, "81 8F"));
-				
+
 				bindManyNamedInstances(ByteTestData.class, "ex",
 						new ByteTestData((byte) 0, ""),
 						new ByteTestData((byte) 0, "82 76 5F"),
@@ -47,7 +47,7 @@ public class RLPDecoderTest {
 
 			assertThat(actual, equalTo(data.expected));
 		}
-		
+
 		@Test(expected = DecoderException.class)
 		public void decodeByteExceptionTest(@All("ex") ByteTestData data) {
 			final RLPDecoder decoder = new RLPDecoder(data.input);
@@ -79,7 +79,7 @@ public class RLPDecoderTest {
 						new ShortTestData((short) 30303, "82 76 5F"),
 						new ShortTestData((short) 20202, "82 4E EA"),
 						new ShortTestData((short) 40202, "82 9D 0A"));
-				
+
 				bindManyNamedInstances(ShortTestData.class, "ex",
 						new ShortTestData((short) 0, ""),
 						new ShortTestData((short) 0, "83 01 00 00"),
@@ -95,7 +95,7 @@ public class RLPDecoderTest {
 
 			assertThat(actual, equalTo(data.expected));
 		}
-		
+
 		@Test(expected = DecoderException.class)
 		public void decodeShortExceptionTest(@All("ex") ShortTestData data) {
 			final RLPDecoder decoder = new RLPDecoder(data.input);
@@ -133,7 +133,7 @@ public class RLPDecoderTest {
 						new IntTestData(Integer.MAX_VALUE, "84 7F FF FF FF"),
 
 						new IntTestData(0xFFFFFFFF, "84 FF FF FF FF"));
-				
+
 				bindManyNamedInstances(IntTestData.class, "ex",
 						new IntTestData(0, ""),
 						new IntTestData(0, "85 F0 51 38 51 6E"),
@@ -150,7 +150,7 @@ public class RLPDecoderTest {
 
 			assertThat(actual, equalTo(data.expected));
 		}
-		
+
 		@Test(expected = DecoderException.class)
 		public void decodeIntExceptionTest(@All("ex") IntTestData data) {
 			final RLPDecoder decoder = new RLPDecoder(data.input);
@@ -199,7 +199,7 @@ public class RLPDecoderTest {
 						new LongTestData(0xFFFF800000000000L,	   "88 FF FF 80 00 00 00 00 00"),
 						new LongTestData(0xFF80000000000000L,	   "88 FF 80 00 00 00 00 00 00"),
 						new LongTestData(0xFFFFFFFFFFFFFFFFL,	   "88 FF FF FF FF FF FF FF FF"));
-				
+
 				bindManyNamedInstances(LongTestData.class, "ex",
 						new LongTestData(0L, ""),
 						new LongTestData(0L, "89 3C C1 09 3F 21 2C 0F 7D 4B"),
@@ -217,7 +217,7 @@ public class RLPDecoderTest {
 
 			assertThat(actual, equalTo(data.expected));
 		}
-		
+
 		@Test(expected = DecoderException.class)
 		public void decodeLongExceptionTest(@All("ex") LongTestData data) {
 			final RLPDecoder decoder = new RLPDecoder(data.input);
@@ -277,7 +277,7 @@ public class RLPDecoderTest {
 						BigIntegerTestData.fromHex(
 								"7b45018451b7f0f5565f4a066fad176a79819f04a3de7cf49b9a0099e4948d767f5f8",
 								"A3 07b45018451b7f0f5565f4a066fad176a79819f04a3de7cf49b9a0099e4948d767f5f8"));
-				
+
 				bindManyNamedInstances(BigIntegerTestData.class, "ex",
 						BigIntegerTestData.fromHex("0", ""),
 						BigIntegerTestData.fromHex("0", "A1 07b45018451b7f"),
@@ -296,7 +296,7 @@ public class RLPDecoderTest {
 
 			assertThat(actual, equalTo(data.expected));
 		}
-		
+
 		@Test(expected = DecoderException.class)
 		public void decodeBigIntegerExceptionTest(@All("ex") BigIntegerTestData data) {
 			final RLPDecoder decoder = new RLPDecoder(data.input);
@@ -365,7 +365,7 @@ public class RLPDecoderTest {
 						new BytesTestData(
 								"ce73660a06626c1b3fda7b18ef7ba3ce17b6bf604f9541d3c6c654b7ae88b239407f659c78f419025d785727ed017b6add21952d7e12007373e321dbc31824ba",
 								"B8 40 ce73660a06626c1b3fda7b18ef7ba3ce17b6bf604f9541d3c6c654b7ae88b239407f659c78f419025d785727ed017b6add21952d7e12007373e321dbc31824ba"));
-				
+
 				bindManyNamedInstances(BytesTestData.class, "ex",
 						new BytesTestData("", ""),
 						new BytesTestData("", "97 87205cf58319be7eb1c6fccc78d0ea"),
@@ -384,7 +384,7 @@ public class RLPDecoderTest {
 
 			assertThat(actual, equalTo(data.expected));
 		}
-		
+
 		@Test(expected = DecoderException.class)
 		public void decodeBytesExceptionTest(@All("ex") BytesTestData data) {
 			final RLPDecoder decoder = new RLPDecoder(data.input);
@@ -423,7 +423,7 @@ public class RLPDecoderTest {
 								"AD 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B"),
 						new StringTestData(
 								"Ethereum(++)/ZeroGox/v0.5.0/ncurses/Linux/g++Ethereum(++)/ZeroGox/v0.5.0/ncurses/Linux/g++",
-								"B8 5A 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B"));				
+								"B8 5A 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B 45 74 68 65 72 65 75 6D 28 2B 2B 29 2F 5A 65 72 6F 47 6F 78 2F 76 30 2E 35 2E 30 2F 6E 63 75 72 73 65 73 2F 4C 69 6E 75 78 2F 67 2B 2B"));
 
 				bindManyNamedInstances(StringTestData.class, "ex",
 						new StringTestData("", new byte[]{}),
@@ -444,7 +444,7 @@ public class RLPDecoderTest {
 
 			assertThat(actual, equalTo(data.expected));
 		}
-		
+
 		@Test(expected = DecoderException.class)
 		public void decodeStringExceptionTest(@All("ex") StringTestData data) {
 			final RLPDecoder decoder = new RLPDecoder(data.input);
