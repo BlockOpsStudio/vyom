@@ -197,7 +197,7 @@ public class RLPEncoderTest {
 			@Override
 			protected void configureTest() {
 				bindManyInstances(BigIntegerTestData.class,
-						BigIntegerTestData.fromDecimal("0", "00"),
+                        BigIntegerTestData.fromDecimal("0", "80"),
 						BigIntegerTestData.fromDecimal("120", "78"),
 						BigIntegerTestData.fromDecimal("127", "7F"),
 						BigIntegerTestData.fromDecimal("128", "81 80"),
@@ -299,7 +299,7 @@ public class RLPEncoderTest {
 						new BytesTestData("7F", "7F"),
 
 						// - Two bytes
-						new BytesTestData("128", "81 80"),
+						new BytesTestData("80", "81 80"),
 
 						// - Empty byte array
 						new BytesTestData("", "80"),
