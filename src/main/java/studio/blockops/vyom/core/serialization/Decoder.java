@@ -2,6 +2,9 @@ package studio.blockops.vyom.core.serialization;
 
 import java.math.BigInteger;
 
+/**
+ * Decoder interface
+ */
 public interface Decoder {
 
 	/**

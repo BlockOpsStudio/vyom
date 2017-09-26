@@ -6,10 +6,24 @@ import java.math.BigInteger;
 import studio.blockops.vyom.core.serialization.Decoder;
 import studio.blockops.vyom.core.serialization.DecoderException;
 
+/**
+ * Defines decoding methods for common types.
+ * <p>
+ * Decodes data from an enclosed {@link ByteArrayInputStream} object,
+ * which is initialized by the provided byte array.
+ */
 public final class RLPDecoder implements Decoder, RLPParameters {
 
+    /**
+     * Byte buffer to store encoded data
+     */
 	private final ByteArrayInputStream input;
 
+    /**
+     * Creates a {@link RLPDecoder} instance initialized with {@link ByteArrayInputStream} object.
+     *
+	 * @param data RLP encoded data as byte array
+	 */
 	public RLPDecoder(final byte[] data) {
 		input = new ByteArrayInputStream(data);
 	}
@@ -111,7 +125,7 @@ public final class RLPDecoder implements Decoder, RLPParameters {
 		} else if (masked == OFFSET_SHORT_ITEM) {
 			return new byte[]{};
 		} else {
-			throw new DecoderException("Invalid BigInteger decoding with first byte value: 0x" + Integer.toHexString(b));
+			throw new DecoderException("Invalid Byte Array decoding with first byte value: 0x" + Integer.toHexString(b));
 		}
 	}
 
@@ -140,7 +154,7 @@ public final class RLPDecoder implements Decoder, RLPParameters {
 		return b;
 	}
 
-	private final byte[] read(int numberOfBytes) {
+	private final byte[] read(final int numberOfBytes) {
 		final byte[] b = new byte[numberOfBytes];
 		final int availableBytes = input.available();
 		if (availableBytes < numberOfBytes) {
