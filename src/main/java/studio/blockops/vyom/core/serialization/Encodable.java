@@ -1,5 +1,9 @@
 package studio.blockops.vyom.core.serialization;
 
+/**
+ * This interface imposes the concrete class to define
+ * encoding logic.
+ */
 public interface Encodable {
 
 	/**

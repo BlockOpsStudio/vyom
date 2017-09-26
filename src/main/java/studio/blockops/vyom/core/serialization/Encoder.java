@@ -3,6 +3,9 @@ package studio.blockops.vyom.core.serialization;
 import java.math.BigInteger;
 import java.util.Collection;
 
+/**
+ * Encoder interface
+ */
 public interface Encoder {
 
 	/**

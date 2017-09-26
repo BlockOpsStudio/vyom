@@ -1,5 +1,8 @@
 package studio.blockops.vyom.core.serialization.rlp;
 
+/**
+ * Parameters required for RLP encoding/decoding
+ */
 interface RLPParameters {
 
     /**
@@ -19,7 +22,7 @@ interface RLPParameters {
     int SIZE_THRESHOLD = 56;
 
     /** RLP encoding rules are defined as follows:
-     * 
+     *
      * For a single byte whose value is in the [0x00, 0x7f] range, that byte is
      * its own RLP encoding.
      */

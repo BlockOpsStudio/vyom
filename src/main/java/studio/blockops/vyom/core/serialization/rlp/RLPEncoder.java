@@ -12,10 +12,22 @@ import com.google.common.base.Preconditions;
 import studio.blockops.vyom.core.serialization.Encodable;
 import studio.blockops.vyom.core.serialization.Encoder;
 
+/**
+ * Defines encoding methods for common types.
+ * <p>
+ * Encodes data to an enclosed {@link ByteArrayOutputStream} object,
+ * which can be queried to return final byte array.
+ */
 public final class RLPEncoder implements Encoder, RLPParameters {
 
+    /**
+     * Byte buffer to store encoded data
+     */
 	private final ByteArrayOutputStream output;
 
+	/**
+	 * Creates a {@link RLPEncoder} instance with a fresh {@link ByteArrayOutputStream} object.
+	 */
 	public RLPEncoder() {
 		this.output = new ByteArrayOutputStream();
 	}
@@ -28,6 +40,11 @@ public final class RLPEncoder implements Encoder, RLPParameters {
 		output.write(b, 0, b.length);
 	}
 
+	/**
+	 * Converts enclosed {@link ByteArrayOutputStream} object to byte array.
+	 *
+	 * @return A byte array of encoded data
+	 */
 	public final byte[] getEncoded() {
 		return output.toByteArray();
 	}
@@ -55,7 +72,7 @@ public final class RLPEncoder implements Encoder, RLPParameters {
 	}
 
 	@Override
-	public void encodeInt(int i) {
+	public void encodeInt(final int i) {
         if ((i & 0xFF) == i) {
             encodeByte((byte) i);
         } else if ((i & 0xFFFF) == i) {
@@ -75,7 +92,7 @@ public final class RLPEncoder implements Encoder, RLPParameters {
 	}
 
     @Override
-    public void encodeLong(long l) {
+    public void encodeLong(final long l) {
         if ((l & 0xFF) == l) {
             encodeByte((byte) l);
         } else if ((l & 0xFFFF) == l) {
@@ -120,7 +137,7 @@ public final class RLPEncoder implements Encoder, RLPParameters {
     }
 
 	@Override
-	public void encodeBigInteger(BigInteger i) {
+	public void encodeBigInteger(final BigInteger i) {
 	    Preconditions.checkNotNull(i);
 		if (i.equals(BigInteger.ZERO)) {
 			encodeByte((byte) 0);
@@ -130,7 +147,7 @@ public final class RLPEncoder implements Encoder, RLPParameters {
 	}
 
 	@Override
-	public void encodeBytes(byte[] bytes) {
+	public void encodeBytes(final byte[] bytes) {
 		if (ByteUtil.isNullOrZeroArray(bytes)) {
 			write((byte) OFFSET_SHORT_ITEM);
 		} else if (bytes.length == 1 && (bytes[0] & 0xFF) < OFFSET_SHORT_ITEM) {
@@ -153,7 +170,7 @@ public final class RLPEncoder implements Encoder, RLPParameters {
 	}
 
 	@Override
-	public void encodeString(String s) {
+	public void encodeString(final String s) {
 		encodeBytes(s.getBytes());
 	}
 

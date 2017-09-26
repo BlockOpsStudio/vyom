@@ -1,5 +1,8 @@
 package studio.blockops.vyom.core.serialization;
 
+/**
+ * An exception occurred during encoding
+ */
 public class EncoderException extends RuntimeException {
 
 	/**
@@ -34,5 +37,5 @@ public class EncoderException extends RuntimeException {
 	public EncoderException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
-	
+
 }
