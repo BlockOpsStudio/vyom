@@ -19,24 +19,24 @@ import studio.blockops.vyom.crypto.Signer;
  * The SecP256K1 guice module.
  */
 public class SecP256K1Module extends AbstractModule {
-	
-	@Override
-	protected void configure() {
-		install(new FactoryModuleBuilder()
-			.implement(Signer.class, SecP256K1Signer.class)
-			.implement(KeyGenerator.class, SecP256K1KeyGenerator.class)
-			.implement(BlockCipher.class, SecP256K1BlockCipher.class)
-			.build(CryptoEngine.class));
-	}
-	
-	/**
-	 * Guice provides method to get {@link Curve} inta
-	 * @return A {@link SecP256K1Curve} singleton instance
-	 */
-	@Provides @Singleton
-	Curve provideCurve() {
-		final X9ECParameters params = SECNamedCurves.getByName("secp256k1");
-		final ECDomainParameters ecParams = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH());
-		return new SecP256K1Curve(ecParams);
-	}
+
+    @Override
+    protected void configure() {
+        install(new FactoryModuleBuilder()
+            .implement(Signer.class, SecP256K1Signer.class)
+            .implement(KeyGenerator.class, SecP256K1KeyGenerator.class)
+            .implement(BlockCipher.class, SecP256K1BlockCipher.class)
+            .build(CryptoEngine.class));
+    }
+
+    /**
+     * Guice provides method to get {@link Curve} inta
+     * @return A {@link SecP256K1Curve} singleton instance
+     */
+    @Provides @Singleton
+    Curve provideCurve() {
+        final X9ECParameters params = SECNamedCurves.getByName("secp256k1");
+        final ECDomainParameters ecParams = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH());
+        return new SecP256K1Curve(ecParams);
+    }
 }

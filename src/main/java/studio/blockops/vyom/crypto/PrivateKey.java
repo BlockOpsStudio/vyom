@@ -13,88 +13,88 @@ import com.google.common.base.Preconditions;
  */
 public final class PrivateKey {
 
-	/**
-	 * The raw private key value
-	 */
-	private final BigInteger value;
-	
-	/**
-	 * Creates a new private key.
-	 * 
-	 * @param value The raw private key value.
-	 * @return The new private key.
-	 */
-	public static PrivateKey create(final BigInteger value) {
-		Preconditions.checkNotNull(value);
-		return new PrivateKey(value);
-	}
-	
-	/**
-	 * Creates a new private key from a decimal string.
-	 * 
-	 * @param value The decimal string.
-	 * @return The new private key.
-	 */
-	public static PrivateKey createFromDecimalString(final String value) {
-		Preconditions.checkNotNull(value);
-		try {
-			return new PrivateKey(new BigInteger(value, 10));
-		} catch (final NumberFormatException e) {
-			throw new CryptoException(e);
-		}
-	}
-	
-	/**
-	 * Creates a new private key from a hex string.
-	 * 
-	 * @param value The hex string.
-	 * @return The new private key.
-	 */
-	public static PrivateKey createFromHexString(final String value) {
-		try {
-			Preconditions.checkNotNull(value);
-			return new PrivateKey(new BigInteger(1, Hex.decode(value)));
-		} catch (final DecoderException e) {
-			throw new CryptoException(e);
-		}
-	}
-	
-	private PrivateKey(final BigInteger value) {
-		this.value = value;
-	}
-	
-	/**
-	 * Returns raw private key value
-	 * @return raw private key value as {@link BigInteger}
-	 */
-	public BigInteger getRaw() {
-		return this.value;
-	}
-	
-	@Override
-	public int hashCode() {
-		return this.value.hashCode();
-	}
+    /**
+     * The raw private key value
+     */
+    private final BigInteger value;
 
-	@Override
-	public boolean equals(final Object obj) {
-		if (obj == null)
-			return false;
-		
-		if (obj == this)
-			return true;
-		
-		if (!(obj instanceof PrivateKey)) {
-			return false;
-		}
+    /**
+     * Creates a new private key.
+     *
+     * @param value The raw private key value.
+     * @return The new private key.
+     */
+    public static PrivateKey create(final BigInteger value) {
+        Preconditions.checkNotNull(value);
+        return new PrivateKey(value);
+    }
 
-		final PrivateKey other = (PrivateKey) obj;
-		return this.value.equals(other.value);
-	}	
-	
-	@Override
-	public String toString() {
-		return Hex.toHexString(ByteUtil.bigIntegerToBytes(this.value));
-	}
-	
+    /**
+     * Creates a new private key from a decimal string.
+     *
+     * @param value The decimal string.
+     * @return The new private key.
+     */
+    public static PrivateKey createFromDecimalString(final String value) {
+        Preconditions.checkNotNull(value);
+        try {
+            return new PrivateKey(new BigInteger(value, 10));
+        } catch (final NumberFormatException e) {
+            throw new CryptoException(e);
+        }
+    }
+
+    /**
+     * Creates a new private key from a hex string.
+     *
+     * @param value The hex string.
+     * @return The new private key.
+     */
+    public static PrivateKey createFromHexString(final String value) {
+        try {
+            Preconditions.checkNotNull(value);
+            return new PrivateKey(new BigInteger(1, Hex.decode(value)));
+        } catch (final DecoderException e) {
+            throw new CryptoException(e);
+        }
+    }
+
+    private PrivateKey(final BigInteger value) {
+        this.value = value;
+    }
+
+    /**
+     * Returns raw private key value
+     * @return raw private key value as {@link BigInteger}
+     */
+    public BigInteger getRaw() {
+        return this.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.value.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null)
+            return false;
+
+        if (obj == this)
+            return true;
+
+        if (!(obj instanceof PrivateKey)) {
+            return false;
+        }
+
+        final PrivateKey other = (PrivateKey) obj;
+        return this.value.equals(other.value);
+    }
+
+    @Override
+    public String toString() {
+        return Hex.toHexString(ByteUtil.bigIntegerToBytes(this.value));
+    }
+
 }

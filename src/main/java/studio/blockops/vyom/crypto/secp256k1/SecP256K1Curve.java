@@ -11,34 +11,34 @@ import studio.blockops.vyom.crypto.Curve;
  */
 public class SecP256K1Curve implements Curve {
 
-	private final ECDomainParameters params;
+    private final ECDomainParameters params;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param params {@link ECDomainParameters}
-	 */
-	SecP256K1Curve(final ECDomainParameters params) {
-		this.params = params;
-	}
+    /**
+     * Constructor
+     *
+     * @param params {@link ECDomainParameters}
+     */
+    SecP256K1Curve(final ECDomainParameters params) {
+        this.params = params;
+    }
 
-	@Override
-	public String getName() {
-		return "secp256k1";
-	}
+    @Override
+    public String getName() {
+        return "secp256k1";
+    }
 
-	@Override
-	public BigInteger getGroupOrder() {
-		return this.params.getN();
-	}
+    @Override
+    public BigInteger getGroupOrder() {
+        return this.params.getN();
+    }
 
-	@Override
-	public BigInteger getHalfGroupOrder() {
-		return this.params.getN().shiftRight(1);
-	}
+    @Override
+    public BigInteger getHalfGroupOrder() {
+        return this.params.getN().shiftRight(1);
+    }
 
-	@Override
-	public ECDomainParameters getParams() {
-		return this.params;
-	}
+    @Override
+    public ECDomainParameters getParams() {
+        return this.params;
+    }
 }

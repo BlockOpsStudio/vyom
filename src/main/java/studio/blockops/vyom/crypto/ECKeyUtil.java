@@ -41,7 +41,7 @@ public class ECKeyUtil {
         Preconditions.checkArgument(signature.getR().signum() >= 0, "r must be positive");
         Preconditions.checkArgument(signature.getS().signum() >= 0, "s must be positive");
         Preconditions.checkArgument(messageHash != null, "messageHash must not be null");
-        
+
         // 1.0 For j from 0 to h   (h == recId here and the loop is outside this function)
         //   1.1 Let x = r + jn
         BigInteger n = curve.getParams().getN();  // Curve order.

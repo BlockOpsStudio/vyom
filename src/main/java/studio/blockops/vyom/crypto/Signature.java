@@ -19,201 +19,201 @@ import com.google.common.base.Preconditions;
  */
 public class Signature {
 
-	/**
-	 * The r-part of the signature.
-	 */
-	private final BigInteger r;
-	
-	/**
-	 * The s-part of the signature.
-	 */
-	private final BigInteger s;
-	
-	/**
-	 * The v-part (Recovery ID) of the signature.
-	 */
-	private final byte v;
+    /**
+     * The r-part of the signature.
+     */
+    private final BigInteger r;
 
-	/**
-	 * Creates a new signature.
-	 *
-	 * @param r The r-part of the signature.
-	 * @param s The s-part of the signature.
-	 */
-	public static Signature create(final BigInteger r, final BigInteger s) {
-		validate(r, s, (byte) 0);
-		return new Signature(r, s, (byte) 0);
-	}
+    /**
+     * The s-part of the signature.
+     */
+    private final BigInteger s;
 
-	/**
-	 * Creates a new signature.
-	 *
-	 * @param bytes The binary representation of the signature.
-	 */
-	public static Signature create(final byte[] bytes) {
-		Preconditions.checkNotNull(bytes);
-		Preconditions.checkArgument(
-				(64 != bytes.length),
-				"binary signature representation must be 64 bytes");
+    /**
+     * The v-part (Recovery ID) of the signature.
+     */
+    private final byte v;
 
-		BigInteger r = new BigInteger(1, Arrays.copyOfRange(bytes, 0, 32));
-		BigInteger s = new BigInteger(1, Arrays.copyOfRange(bytes, 32, 64));
+    /**
+     * Creates a new signature.
+     *
+     * @param r The r-part of the signature.
+     * @param s The s-part of the signature.
+     */
+    public static Signature create(final BigInteger r, final BigInteger s) {
+        validate(r, s, (byte) 0);
+        return new Signature(r, s, (byte) 0);
+    }
 
-		validate(r, s, (byte) 0);
-		return new Signature(r, s, (byte) 0);
-	}
+    /**
+     * Creates a new signature.
+     *
+     * @param bytes The binary representation of the signature.
+     */
+    public static Signature create(final byte[] bytes) {
+        Preconditions.checkNotNull(bytes);
+        Preconditions.checkArgument(
+                (64 != bytes.length),
+                "binary signature representation must be 64 bytes");
 
-	/**
-	 * Creates a new signature.
-	 *
-	 * @param r The binary representation of r.
-	 * @param s The binary representation of s.
-	 */
-	public static Signature create(final byte[] r, final byte[] s) {
-		Preconditions.checkNotNull(r);
-		Preconditions.checkNotNull(s);
-		Preconditions.checkArgument(
-				(32 != r.length || 32 != s.length),
-				"binary signature representation of r and s must both have 32 bytes length");
+        BigInteger r = new BigInteger(1, Arrays.copyOfRange(bytes, 0, 32));
+        BigInteger s = new BigInteger(1, Arrays.copyOfRange(bytes, 32, 64));
 
-		final BigInteger r1 = new BigInteger(1, r);
-		final BigInteger s1 = new BigInteger(1, s);
+        validate(r, s, (byte) 0);
+        return new Signature(r, s, (byte) 0);
+    }
 
-		validate(r1, s1, (byte) 0);
-		return new Signature(r1, s1, (byte) 0);
-	}
+    /**
+     * Creates a new signature.
+     *
+     * @param r The binary representation of r.
+     * @param s The binary representation of s.
+     */
+    public static Signature create(final byte[] r, final byte[] s) {
+        Preconditions.checkNotNull(r);
+        Preconditions.checkNotNull(s);
+        Preconditions.checkArgument(
+                (32 != r.length || 32 != s.length),
+                "binary signature representation of r and s must both have 32 bytes length");
 
-	/**
-	 * Creates a new signature.
-	 *
-	 * @param r The r-part of the signature.
-	 * @param s The s-part of the signature.
-	 * @param v The v-part of the signature.
-	 */
-	public static Signature create(final String r, final String s, final byte v) {
-		final BigInteger r1 = new BigInteger(r);
-		final BigInteger s1 = new BigInteger(s);
-		validate(r1, s1, v);
-		return new Signature(r1, s1, v);
-	}
+        final BigInteger r1 = new BigInteger(1, r);
+        final BigInteger s1 = new BigInteger(1, s);
 
-	/**
-	 * Creates a new signature.
-	 *
-	 * @param r The r-part of the signature.
-	 * @param s The s-part of the signature.
-	 */
-	public static Signature create(final BigInteger r, final BigInteger s, final byte v) {
-		validate(r, s, v);
-		return new Signature(r, s, v);
-	}
+        validate(r1, s1, (byte) 0);
+        return new Signature(r1, s1, (byte) 0);
+    }
 
-	private Signature(final BigInteger r, final BigInteger s, final byte v) {
-		this.r = r;
-		this.s = s;
-		this.v = v;
-	}
+    /**
+     * Creates a new signature.
+     *
+     * @param r The r-part of the signature.
+     * @param s The s-part of the signature.
+     * @param v The v-part of the signature.
+     */
+    public static Signature create(final String r, final String s, final byte v) {
+        final BigInteger r1 = new BigInteger(r);
+        final BigInteger s1 = new BigInteger(s);
+        validate(r1, s1, v);
+        return new Signature(r1, s1, v);
+    }
 
-	private static void validate(final BigInteger r, final BigInteger s, final byte v) {
-		Preconditions.checkNotNull(r);
-		Preconditions.checkNotNull(s);
+    /**
+     * Creates a new signature.
+     *
+     * @param r The r-part of the signature.
+     * @param s The s-part of the signature.
+     */
+    public static Signature create(final BigInteger r, final BigInteger s, final byte v) {
+        validate(r, s, v);
+        return new Signature(r, s, v);
+    }
 
-		Preconditions.checkArgument(v == 0 || v == 27 || v == 28, "Not a valid value for v");
+    private Signature(final BigInteger r, final BigInteger s, final byte v) {
+        this.r = r;
+        this.s = s;
+        this.v = v;
+    }
 
-		Preconditions.checkArgument(isMoreThan(r, BigInteger.ONE), "r cannot be less than 1");
-		Preconditions.checkArgument(isMoreThan(s, BigInteger.ONE), "s cannot be less than 1");
+    private static void validate(final BigInteger r, final BigInteger s, final byte v) {
+        Preconditions.checkNotNull(r);
+        Preconditions.checkNotNull(s);
 
-		Preconditions.checkArgument(isLessThan(r, Constants.getSECP256K1N()), "r cannot be more than max value" + Constants.getSECP256K1N());
-		Preconditions.checkArgument(isLessThan(s, Constants.getSECP256K1N()), "s cannot be more than max value" + Constants.getSECP256K1N());
-	}
+        Preconditions.checkArgument(v == 0 || v == 27 || v == 28, "Not a valid value for v");
 
-	/**
-	 * Gets the r-part of the signature.
-	 *
-	 * @return The r-part of the signature.
-	 */
-	public BigInteger getR() {
-		return r;
-	}
+        Preconditions.checkArgument(isMoreThan(r, BigInteger.ONE), "r cannot be less than 1");
+        Preconditions.checkArgument(isMoreThan(s, BigInteger.ONE), "s cannot be less than 1");
 
-	/**
-	 * Gets the r-part of the signature.
-	 *
-	 * @return The r-part of the signature.
-	 */
-	public byte[] getBinaryR() {
-		return this.r.toByteArray();
-	}
+        Preconditions.checkArgument(isLessThan(r, Constants.getSECP256K1N()), "r cannot be more than max value" + Constants.getSECP256K1N());
+        Preconditions.checkArgument(isLessThan(s, Constants.getSECP256K1N()), "s cannot be more than max value" + Constants.getSECP256K1N());
+    }
 
-	/**
-	 * Gets the s-part of the signature.
-	 *
-	 * @return The s-part of the signature.
-	 */
-	public BigInteger getS() {
-		return s;
-	}
+    /**
+     * Gets the r-part of the signature.
+     *
+     * @return The r-part of the signature.
+     */
+    public BigInteger getR() {
+        return r;
+    }
 
-	/**
-	 * Gets the s-part of the signature.
-	 *
-	 * @return The s-part of the signature.
-	 */
-	public byte[] getBinaryS() {
-		return this.s.toByteArray();
-	}
+    /**
+     * Gets the r-part of the signature.
+     *
+     * @return The r-part of the signature.
+     */
+    public byte[] getBinaryR() {
+        return this.r.toByteArray();
+    }
 
-	/**
-	 * Gets the v-part of the signature.
-	 *
-	 * @return The v-part of the signature.
-	 */
-	public byte getV() {
-		return v;
-	}
+    /**
+     * Gets the s-part of the signature.
+     *
+     * @return The s-part of the signature.
+     */
+    public BigInteger getS() {
+        return s;
+    }
 
-	/**
-	 * Gets a big-endian 65-byte representation of the signature with recoverID.
-	 *
-	 * @return a big-endian 65-byte representation of the signature with recoverID.
-	 */
-	public byte[] getBytes() {
-		final byte fixedV = (this.v>=27) ? (byte) (this.v - 27) : this.v;
+    /**
+     * Gets the s-part of the signature.
+     *
+     * @return The s-part of the signature.
+     */
+    public byte[] getBinaryS() {
+        return this.s.toByteArray();
+    }
 
-		return ByteUtil.merge(
-				ByteUtil.bigIntegerToBytes(this.r),
-				ByteUtil.bigIntegerToBytes(this.s),
-				new byte[]{fixedV});
-	}
+    /**
+     * Gets the v-part of the signature.
+     *
+     * @return The v-part of the signature.
+     */
+    public byte getV() {
+        return v;
+    }
 
-	/**
-	 * Returns hex representation of this Signature
-	 * @return Hex representation of this Signature
-	 */
-	public String toHexString() {
-		return Hex.toHexString(getBytes());
-	}
+    /**
+     * Gets a big-endian 65-byte representation of the signature with recoverID.
+     *
+     * @return a big-endian 65-byte representation of the signature with recoverID.
+     */
+    public byte[] getBytes() {
+        final byte fixedV = (this.v>=27) ? (byte) (this.v - 27) : this.v;
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(r, s, v);
-	}
+        return ByteUtil.merge(
+                ByteUtil.bigIntegerToBytes(this.r),
+                ByteUtil.bigIntegerToBytes(this.s),
+                new byte[]{fixedV});
+    }
 
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof Signature) {
-			Signature that = (Signature) object;
-			return Objects.equals(this.r, that.r) && Objects.equals(this.s, that.s) && Objects.equals(this.v, that.v);
-		}
-		return false;
-	}
+    /**
+     * Returns hex representation of this Signature
+     * @return Hex representation of this Signature
+     */
+    public String toHexString() {
+        return Hex.toHexString(getBytes());
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("r", r)
-				.add("s", s)
-				.add("v", v)
-				.toString();
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(r, s, v);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Signature) {
+            Signature that = (Signature) object;
+            return Objects.equals(this.r, that.r) && Objects.equals(this.s, that.s) && Objects.equals(this.v, that.v);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("r", r)
+                .add("s", s)
+                .add("v", v)
+                .toString();
+    }
 }

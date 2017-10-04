@@ -23,56 +23,56 @@ public final class RLPEncoder implements Encoder, RLPParameters {
     /**
      * Byte buffer to store encoded data
      */
-	private final ByteArrayOutputStream output;
+    private final ByteArrayOutputStream output;
 
-	/**
-	 * Creates a {@link RLPEncoder} instance with a fresh {@link ByteArrayOutputStream} object.
-	 */
-	public RLPEncoder() {
-		this.output = new ByteArrayOutputStream();
-	}
+    /**
+     * Creates a {@link RLPEncoder} instance with a fresh {@link ByteArrayOutputStream} object.
+     */
+    public RLPEncoder() {
+        this.output = new ByteArrayOutputStream();
+    }
 
-	private final void write(final byte b) {
-		output.write(b);
-	}
+    private final void write(final byte b) {
+        output.write(b);
+    }
 
-	private final void write(final byte... b) {
-		output.write(b, 0, b.length);
-	}
+    private final void write(final byte... b) {
+        output.write(b, 0, b.length);
+    }
 
-	/**
-	 * Converts enclosed {@link ByteArrayOutputStream} object to byte array.
-	 *
-	 * @return A byte array of encoded data
-	 */
-	public final byte[] getEncoded() {
-		return output.toByteArray();
-	}
+    /**
+     * Converts enclosed {@link ByteArrayOutputStream} object to byte array.
+     *
+     * @return A byte array of encoded data
+     */
+    public final byte[] getEncoded() {
+        return output.toByteArray();
+    }
 
-	@Override
-	public void encodeByte(final byte b) {
-		if ((b & 0xFF) == 0) {
-			write((byte) OFFSET_SHORT_ITEM);
-		} else if ((b & 0xFF) <= 0x7F) {
-			write(b);
-		} else {
-			write((byte) (OFFSET_SHORT_ITEM + 1), b);
-		}
-	}
+    @Override
+    public void encodeByte(final byte b) {
+        if ((b & 0xFF) == 0) {
+            write((byte) OFFSET_SHORT_ITEM);
+        } else if ((b & 0xFF) <= 0x7F) {
+            write(b);
+        } else {
+            write((byte) (OFFSET_SHORT_ITEM + 1), b);
+        }
+    }
 
-	@Override
-	public void encodeShort(final short s) {
-		if ((s & 0xFF) == s) {
-			encodeByte((byte) s);
-		} else {
-			write((byte) (OFFSET_SHORT_ITEM + 2),
-			        (byte) (s >> 8),
-					(byte) s);
-		}
-	}
+    @Override
+    public void encodeShort(final short s) {
+        if ((s & 0xFF) == s) {
+            encodeByte((byte) s);
+        } else {
+            write((byte) (OFFSET_SHORT_ITEM + 2),
+                    (byte) (s >> 8),
+                    (byte) s);
+        }
+    }
 
-	@Override
-	public void encodeInt(final int i) {
+    @Override
+    public void encodeInt(final int i) {
         if ((i & 0xFF) == i) {
             encodeByte((byte) i);
         } else if ((i & 0xFFFF) == i) {
@@ -89,7 +89,7 @@ public final class RLPEncoder implements Encoder, RLPParameters {
                     (byte) (i >>> 8),
                     (byte) i);
         }
-	}
+    }
 
     @Override
     public void encodeLong(final long l) {
@@ -136,59 +136,59 @@ public final class RLPEncoder implements Encoder, RLPParameters {
         }
     }
 
-	@Override
-	public void encodeBigInteger(final BigInteger i) {
-	    Preconditions.checkNotNull(i);
-		if (i.equals(BigInteger.ZERO)) {
-			encodeByte((byte) 0);
-		} else {
-			encodeBytes(BigIntegers.asUnsignedByteArray(i));
-		}
-	}
+    @Override
+    public void encodeBigInteger(final BigInteger i) {
+        Preconditions.checkNotNull(i);
+        if (i.equals(BigInteger.ZERO)) {
+            encodeByte((byte) 0);
+        } else {
+            encodeBytes(BigIntegers.asUnsignedByteArray(i));
+        }
+    }
 
-	@Override
-	public void encodeBytes(final byte[] bytes) {
-		if (ByteUtil.isNullOrZeroArray(bytes)) {
-			write((byte) OFFSET_SHORT_ITEM);
-		} else if (bytes.length == 1 && (bytes[0] & 0xFF) < OFFSET_SHORT_ITEM) {
-			write(bytes);
-		} else if (bytes.length < SIZE_THRESHOLD) {
-		    write((byte) (OFFSET_SHORT_ITEM + bytes.length));
-		    write(bytes);
-		} else {
-			final int length = bytes.length;
-			if (length <= 0xFF) {
-			    write((byte) (OFFSET_LONG_ITEM + 1),
-			            (byte) length);
-			} else {
+    @Override
+    public void encodeBytes(final byte[] bytes) {
+        if (ByteUtil.isNullOrZeroArray(bytes)) {
+            write((byte) OFFSET_SHORT_ITEM);
+        } else if (bytes.length == 1 && (bytes[0] & 0xFF) < OFFSET_SHORT_ITEM) {
+            write(bytes);
+        } else if (bytes.length < SIZE_THRESHOLD) {
+            write((byte) (OFFSET_SHORT_ITEM + bytes.length));
+            write(bytes);
+        } else {
+            final int length = bytes.length;
+            if (length <= 0xFF) {
+                write((byte) (OFFSET_LONG_ITEM + 1),
+                        (byte) length);
+            } else {
                 write((byte) (OFFSET_LONG_ITEM + 2),
                         (byte) (length >> 8),
                         (byte) length);
-			}
-			write(bytes);
-		}
-	}
+            }
+            write(bytes);
+        }
+    }
 
-	@Override
-	public void encodeString(final String s) {
-		encodeBytes(s.getBytes());
-	}
+    @Override
+    public void encodeString(final String s) {
+        encodeBytes(s.getBytes());
+    }
 
-	@Override
-	public void encodeObject(Encodable object) {
-		// TODO Auto-generated method stub
+    @Override
+    public void encodeObject(Encodable object) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void encodeObjectArray(Encodable... objects) {
-		// TODO Auto-generated method stub
+    @Override
+    public void encodeObjectArray(Encodable... objects) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void encodeObjectArray(Collection<? extends Encodable> objects) {
-		// TODO Auto-generated method stub
-	}
+    @Override
+    public void encodeObjectArray(Collection<? extends Encodable> objects) {
+        // TODO Auto-generated method stub
+    }
 
 }
