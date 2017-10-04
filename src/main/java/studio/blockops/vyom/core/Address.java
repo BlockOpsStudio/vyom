@@ -7,7 +7,7 @@ import org.spongycastle.util.encoders.Hex;
 
 import com.google.common.base.Preconditions;
 
-import studio.blockops.vyom.core.crypto.CryptoException;
+import studio.blockops.vyom.crypto.CryptoException;
 
 /**
  * A wallet address
