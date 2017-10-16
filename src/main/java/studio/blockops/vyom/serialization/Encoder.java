@@ -9,6 +9,20 @@ import java.util.Collection;
 public interface Encoder {
 
     /**
+     * Writes raw byte to this encoder output stream
+     *
+     * @param b
+     */
+    void write(final byte b);
+
+    /**
+     * Writes raw bytes to this encoder output stream
+     *
+     * @param b
+     */
+    void write(final byte... b);
+
+    /**
      * Encodes a 8-bit byte value.
      *
      * @param b The value.
@@ -56,6 +70,13 @@ public interface Encoder {
      * @param s The value.
      */
     void encodeString(final String s);
+
+    /**
+     * Encodes a list of encoded elements
+     *
+     * @param bytes The value.
+     */
+    void encodeList(final byte[]... elements);
 
     /**
      * Encodes an object value.

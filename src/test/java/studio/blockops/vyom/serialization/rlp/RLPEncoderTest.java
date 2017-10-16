@@ -14,6 +14,7 @@ import org.jukito.JukitoRunner;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
+import org.spongycastle.util.encoders.Hex;
 
 @RunWith(Enclosed.class)
 public class RLPEncoderTest {
@@ -41,7 +42,7 @@ public class RLPEncoderTest {
         public void encodeByteTest(@All ByteTestData data) {
             encoder.encodeByte(data.input);
 
-            byte[] actual = encoder.getEncoded();
+            final byte[] actual = encoder.getEncoded();
 
             assertThat(actual, equalTo(data.expected));
         }
@@ -78,7 +79,7 @@ public class RLPEncoderTest {
         public void encodeShortTest(@All ShortTestData data) {
             encoder.encodeShort(data.input);
 
-            byte[] actual = encoder.getEncoded();
+            final byte[] actual = encoder.getEncoded();
 
             assertThat(actual, equalTo(data.expected));
         }
@@ -121,7 +122,7 @@ public class RLPEncoderTest {
         public void encodeIntTest(@All IntTestData data) {
             encoder.encodeInt(data.input);
 
-            byte[] actual = encoder.getEncoded();
+            final byte[] actual = encoder.getEncoded();
 
             assertThat(actual, equalTo(data.expected));
         }
@@ -175,7 +176,7 @@ public class RLPEncoderTest {
         public void encodeLongTest(@All LongTestData data) {
             encoder.encodeLong(data.input);
 
-            byte[] actual = encoder.getEncoded();
+            final byte[] actual = encoder.getEncoded();
 
             assertThat(actual, equalTo(data.expected));
         }
@@ -240,7 +241,7 @@ public class RLPEncoderTest {
         public void encodeBigIntegerTest(@All BigIntegerTestData data) {
             encoder.encodeBigInteger(data.input);
 
-            byte[] actual = encoder.getEncoded();
+            final byte[] actual = encoder.getEncoded();
 
             assertThat(actual, equalTo(data.expected));
         }
@@ -314,7 +315,7 @@ public class RLPEncoderTest {
         public void encodeBytesTest(@All BytesTestData data) {
             encoder.encodeBytes(data.input);
 
-            byte[] actual = encoder.getEncoded();
+            final byte[] actual = encoder.getEncoded();
 
             assertThat(actual, equalTo(data.expected));
         }
@@ -359,7 +360,7 @@ public class RLPEncoderTest {
         public void encodeStringTest(@All StringTestData data) {
             encoder.encodeString(data.input);
 
-            byte[] actual = encoder.getEncoded();
+            final byte[] actual = encoder.getEncoded();
 
             assertThat(actual, equalTo(data.expected));
         }
@@ -374,6 +375,183 @@ public class RLPEncoderTest {
                 super(expected);
                 this.input = input;
             }
+        }
+    }
+
+    @RunWith(JukitoRunner.class)
+    public static class EncodeListTest extends RLPEncoderTest {
+
+        @Test
+        public void encodeEmptyListTest() {
+            encoder.encodeList(ByteUtil.EMPTY_BYTE_ARRAY);
+
+            final byte[] actual = encoder.getEncoded();
+
+            final byte[] expected = new byte[] {(byte) 0xc0};
+            assertThat(actual, equalTo(expected));
+        }
+
+        @Test
+        public void encodeShortStringListTest1() {
+            final RLPEncoder listEncoder = new RLPEncoder();
+            listEncoder.encodeString("cat");
+            listEncoder.encodeString("dog");
+
+            encoder.encodeList(listEncoder.getEncoded());
+
+            final byte[] actual = encoder.getEncoded();
+
+            final String expected = "c88363617483646f67";
+            assertThat(actual, equalTo(Hex.decode(expected)));
+        }
+
+        @Test
+        public void encodeShortStringListTest2() {
+            final RLPEncoder listEncoder = new RLPEncoder();
+            listEncoder.encodeString("dog");
+            listEncoder.encodeString("god");
+            listEncoder.encodeString("cat");
+
+            encoder.encodeList(listEncoder.getEncoded());
+
+            final byte[] actual = encoder.getEncoded();
+
+            final String expected = "cc83646f6783676f6483636174";
+            assertThat(actual, equalTo(Hex.decode(expected)));
+        }
+
+        @Test
+        public void encodeLongStringListTest() {
+            final RLPEncoder listEncoder = new RLPEncoder();
+            listEncoder.encodeString("cat");
+            listEncoder.encodeString("Lorem ipsum dolor sit amet, consectetur adipisicing elit");
+
+            encoder.encodeList(listEncoder.getEncoded());
+
+            final byte[] actual = encoder.getEncoded();
+
+            final String expected = "f83e83636174b8384c6f72656d20697073756d20646f6c6f722073697420616d65742c20636f6e7365637465747572206164697069736963696e6720656c6974";
+            assertThat(actual, equalTo(Hex.decode(expected)));
+        }
+
+        @Test
+        public void encodeMultiListTest1() {
+            // [ 1, ["cat"], "dog", [ 2 ] ]
+            RLPEncoder listEncoder, tempEncoder;
+
+            listEncoder = new RLPEncoder();
+
+            // 1
+            listEncoder.encodeInt(1);
+
+            // ["cat"]
+            tempEncoder = new RLPEncoder();
+            tempEncoder.encodeString("cat");
+            listEncoder.encodeList(tempEncoder.getEncoded());
+
+            // "dog"
+            listEncoder.encodeString("dog");
+
+            // [ 2 ]
+            tempEncoder = new RLPEncoder();
+            tempEncoder.encodeInt(2);
+            listEncoder.encodeList(tempEncoder.getEncoded());
+
+            // [ 1, ["cat"], "dog", [ 2 ] ]
+            encoder.encodeList(listEncoder.getEncoded());
+
+            final byte[] actual = encoder.getEncoded();
+
+            final String expected = "cc01c48363617483646f67c102";
+            assertThat(actual, equalTo(Hex.decode(expected)));
+        }
+
+        @Test
+        public void encodeMultiListTest2() {
+            // [ ["cat", "dog"], [ 1, 2 ], [] ]
+            RLPEncoder listEncoder, tempEncoder;
+
+            listEncoder = new RLPEncoder();
+
+            // ["cat", "dog"]
+            tempEncoder = new RLPEncoder();
+            tempEncoder.encodeString("cat");
+            tempEncoder.encodeString("dog");
+            listEncoder.encodeList(tempEncoder.getEncoded());
+
+            // [ 1, 2 ]
+            tempEncoder = new RLPEncoder();
+            tempEncoder.encodeInt(1);
+            tempEncoder.encodeInt(2);
+            listEncoder.encodeList(tempEncoder.getEncoded());
+
+            // []
+            listEncoder.encodeList(ByteUtil.EMPTY_BYTE_ARRAY);
+
+            // [ ["cat", "dog"], [ 1, 2 ], [] ]
+            encoder.encodeList(listEncoder.getEncoded());
+
+            final byte[] actual = encoder.getEncoded();
+
+            final String expected = "cdc88363617483646f67c20102c0";
+            assertThat(actual, equalTo(Hex.decode(expected)));
+        }
+
+        @Test
+        public void encodeEmptyListOfList() {
+            // [ [ [], [] ], [] ]
+            RLPEncoder listEncoder, tempEncoder;
+
+            listEncoder = new RLPEncoder();
+
+            // [ [], [] ]
+            tempEncoder = new RLPEncoder();
+            tempEncoder.encodeList(ByteUtil.EMPTY_BYTE_ARRAY);
+            tempEncoder.encodeList(ByteUtil.EMPTY_BYTE_ARRAY);
+            listEncoder.encodeList(tempEncoder.getEncoded());
+
+            // []
+            listEncoder.encodeList(ByteUtil.EMPTY_BYTE_ARRAY);
+
+            // [ [ [], [] ], [] ]
+            encoder.encodeList(listEncoder.getEncoded());
+
+            final byte[] actual = encoder.getEncoded();
+
+            final String expected = "c4c2c0c0c0";
+            assertThat(actual, equalTo(Hex.decode(expected)));
+        }
+
+        @Test
+        public void encodeRepOfTwoListOfListTest() {
+            // [ [], [[]], [ [], [[]] ] ]
+            RLPEncoder listEncoder, tempEncoder1, tempEncoder2;
+
+            listEncoder = new RLPEncoder();
+
+            // []
+            listEncoder.encodeList(ByteUtil.EMPTY_BYTE_ARRAY);
+
+            // [[]]
+            tempEncoder1 = new RLPEncoder();
+            tempEncoder1.encodeList(ByteUtil.EMPTY_BYTE_ARRAY);
+            listEncoder.encodeList(tempEncoder1.getEncoded());
+
+            // [ [], [[]] ]
+            tempEncoder1 = new RLPEncoder();
+            tempEncoder1.encodeList(ByteUtil.EMPTY_BYTE_ARRAY);
+            tempEncoder2 = new RLPEncoder();
+            tempEncoder2.encodeList(ByteUtil.EMPTY_BYTE_ARRAY);
+            tempEncoder1.encodeList(tempEncoder2.getEncoded());
+            listEncoder.encodeList(tempEncoder1.getEncoded());
+
+            // [ [ [], [] ], [] ]
+            encoder.encodeList(listEncoder.getEncoded());
+
+            final byte[] actual = encoder.getEncoded();
+
+            final String expected = "c7c0c1c0c3c0c1c0";
+            assertThat(actual, equalTo(Hex.decode(expected)));
         }
     }
 

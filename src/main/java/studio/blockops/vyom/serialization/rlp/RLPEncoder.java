@@ -32,14 +32,6 @@ public final class RLPEncoder implements Encoder, RLPParameters {
         this.output = new ByteArrayOutputStream();
     }
 
-    private final void write(final byte b) {
-        output.write(b);
-    }
-
-    private final void write(final byte... b) {
-        output.write(b, 0, b.length);
-    }
-
     /**
      * Converts enclosed {@link ByteArrayOutputStream} object to byte array.
      *
@@ -47,6 +39,16 @@ public final class RLPEncoder implements Encoder, RLPParameters {
      */
     public final byte[] getEncoded() {
         return output.toByteArray();
+    }
+
+    @Override
+    public void write(final byte b) {
+        output.write(b);
+    }
+
+    @Override
+    public void write(final byte... b) {
+        output.write(b, 0, b.length);
     }
 
     @Override
@@ -175,20 +177,44 @@ public final class RLPEncoder implements Encoder, RLPParameters {
     }
 
     @Override
-    public void encodeObject(Encodable object) {
-        // TODO Auto-generated method stub
+    public void encodeList(byte[]... elements) {
+        if (elements == null) {
+            write((byte) OFFSET_SHORT_LIST);
+        } else {
+            int totalLength = ByteUtil.length(elements);
+            if (totalLength < SIZE_THRESHOLD) {
+                write((byte) (OFFSET_SHORT_LIST + totalLength));
+            } else if (totalLength <= 0xFF) {
+                write((byte) (OFFSET_LONG_LIST + 1),
+                        (byte) totalLength);
+            } else {
+                write((byte) (OFFSET_LONG_LIST + 2),
+                        (byte) (totalLength >> 8),
+                        (byte) totalLength);
+            }
+            for (byte[] element: elements) {
+                write(element);
+            }
+        }
+    }
 
+    @Override
+    public void encodeObject(Encodable object) {
+        object.encode(this);
     }
 
     @Override
     public void encodeObjectArray(Encodable... objects) {
-        // TODO Auto-generated method stub
-
+        for (Encodable object: objects) {
+            object.encode(this);
+        }
     }
 
     @Override
     public void encodeObjectArray(Collection<? extends Encodable> objects) {
-        // TODO Auto-generated method stub
+        for (Encodable object: objects) {
+            object.encode(this);
+        }
     }
 
 }
