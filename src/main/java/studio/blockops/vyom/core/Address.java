@@ -1,6 +1,7 @@
 package studio.blockops.vyom.core;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
@@ -8,16 +9,24 @@ import org.spongycastle.util.encoders.Hex;
 import com.google.common.base.Preconditions;
 
 import studio.blockops.vyom.crypto.CryptoException;
+import studio.blockops.vyom.serialization.Encodable;
+import studio.blockops.vyom.serialization.Encoder;
+import studio.blockops.vyom.serialization.rlp.RLPEncoder;
 
 /**
  * A wallet address
  */
-public class Address {
+public class Address implements Encodable {
 
     /**
      * Raw address value
      */
     private final byte[] value;
+
+    /**
+     * RLP Encoded data of this address
+     */
+    private Optional<byte[]> encoded = Optional.empty();
 
     /**
      * Creates a new address
@@ -46,6 +55,25 @@ public class Address {
 
     private Address(final byte[] value) {
         this.value = value;
+    }
+
+    @Override
+    public void encode(Encoder encoder) {
+        encoder.write(getEncoded());
+    }
+
+    @Override
+    public byte[] getEncoded() {
+        if (!encoded.isPresent()) {
+            encode();
+        }
+        return encoded.get();
+    }
+
+    private void encode() {
+        final RLPEncoder encoder = new RLPEncoder();
+        encoder.encodeBytes(this.value);
+        encoded = Optional.of(encoder.getEncoded());
     }
 
     /**

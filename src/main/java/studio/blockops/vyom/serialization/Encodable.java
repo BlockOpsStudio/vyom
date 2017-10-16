@@ -11,6 +11,13 @@ public interface Encodable {
      *
      * @param encoder The {@link Encoder} to use
      */
-    void serialize(final Encoder encoder);
+    void encode(final Encoder encoder);
+
+    /**
+     * Returns encoded data
+     *
+     * @return returns encoded data in byte array form.
+     */
+    byte[] getEncoded();
 
 }
