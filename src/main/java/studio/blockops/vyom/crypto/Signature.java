@@ -118,7 +118,7 @@ public class Signature {
         Preconditions.checkNotNull(r);
         Preconditions.checkNotNull(s);
 
-        Preconditions.checkArgument(v == 0 || v == 27 || v == 28, "Not a valid value for v");
+        Preconditions.checkArgument(v == 0 || (v >= 27 && v <= 30), "Not a valid value for v");
 
         Preconditions.checkArgument(isMoreThan(r, BigInteger.ONE), "r cannot be less than 1");
         Preconditions.checkArgument(isMoreThan(s, BigInteger.ONE), "s cannot be less than 1");
@@ -200,12 +200,21 @@ public class Signature {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (object instanceof Signature) {
-            Signature that = (Signature) object;
-            return Objects.equals(this.r, that.r) && Objects.equals(this.s, that.s) && Objects.equals(this.v, that.v);
+    public boolean equals(final Object obj) {
+        if (obj == null)
+            return false;
+
+        if (obj == this)
+            return true;
+
+        if (!(obj instanceof Signature)) {
+            return false;
         }
-        return false;
+
+        final Signature other = (Signature) obj;
+        return Objects.equals(this.r, other.r)
+                && Objects.equals(this.s, other.s)
+                && Objects.equals(this.v, other.v);
     }
 
     @Override
