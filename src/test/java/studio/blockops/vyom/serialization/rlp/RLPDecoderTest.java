@@ -12,6 +12,7 @@ import org.jukito.JukitoRunner;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
+import org.spongycastle.util.encoders.Hex;
 
 import studio.blockops.vyom.serialization.DecoderException;
 
@@ -462,6 +463,178 @@ public class RLPDecoderTest {
                 this.expected = expected;
             }
         }
+    }
+
+    @RunWith(JukitoRunner.class)
+    public static class DecodeListTest extends RLPDecoderTest {
+
+        @Test
+        public void decodeEmptyListTest() {
+            final RLPDecoder decoder = new RLPDecoder(new byte[] {(byte) 0xc0});
+
+            final byte[] actual = decoder.decodeList();
+
+            final byte[] expected = ByteUtil.EMPTY_BYTE_ARRAY;
+            assertThat(actual, equalTo(expected));
+        }
+
+        @Test
+        public void decodeShortStringListTest1() {
+            RLPDecoder decoder;
+
+            final byte[] input = Hex.decode("c88363617483646f67");
+            decoder = new RLPDecoder(input);
+
+            final byte[] decodedList = decoder.decodeList();
+
+            decoder = new RLPDecoder(decodedList);
+
+            assertThat(decoder.decodeString(), equalTo("cat"));
+            assertThat(decoder.decodeString(), equalTo("dog"));
+        }
+
+        @Test
+        public void decodeShortStringListTest2() {
+            RLPDecoder decoder;
+
+            final byte[] input = Hex.decode("cc83646f6783676f6483636174");
+            decoder = new RLPDecoder(input);
+
+            final byte[] decodedList = decoder.decodeList();
+
+            decoder = new RLPDecoder(decodedList);
+
+            assertThat(decoder.decodeString(), equalTo("dog"));
+            assertThat(decoder.decodeString(), equalTo("god"));
+            assertThat(decoder.decodeString(), equalTo("cat"));
+        }
+
+        @Test
+        public void decodeLongStringListTest() {
+            RLPDecoder decoder;
+
+            final byte[] input = Hex.decode("f83e83636174b8384c6f72656d20697073756d20646f6c6f722073697420616d65742c20636f6e7365637465747572206164697069736963696e6720656c6974");
+            decoder = new RLPDecoder(input);
+
+            final byte[] decodedList = decoder.decodeList();
+
+            decoder = new RLPDecoder(decodedList);
+
+            assertThat(decoder.decodeString(), equalTo("cat"));
+            assertThat(decoder.decodeString(), equalTo("Lorem ipsum dolor sit amet, consectetur adipisicing elit"));
+        }
+
+        @Test
+        public void decodeMultiListTest1() {
+            RLPDecoder decoder, tempDecoder;
+            byte[] decodedList;
+
+            final byte[] input = Hex.decode("cc01c48363617483646f67c102");
+            decoder = new RLPDecoder(input);
+
+            // [ 1, ["cat"], "dog", [ 2 ] ]
+            decodedList = decoder.decodeList();
+            decoder = new RLPDecoder(decodedList);
+
+            // 1
+            assertThat(decoder.decodeInt(), equalTo(1));
+
+            // ["cat"]
+            decodedList = decoder.decodeList();
+            tempDecoder = new RLPDecoder(decodedList);
+            assertThat(tempDecoder.decodeString(), equalTo("cat"));
+
+            // "dog"
+            assertThat(decoder.decodeString(), equalTo("dog"));
+
+            // [ 2 ]
+            decodedList = decoder.decodeList();
+            tempDecoder = new RLPDecoder(decodedList);
+            assertThat(tempDecoder.decodeInt(), equalTo(2));
+        }
+
+        @Test
+        public void decodeMultiListTest2() {
+            RLPDecoder decoder, tempDecoder;
+            byte[] decodedList;
+
+            final byte[] input = Hex.decode("cdc88363617483646f67c20102c0");
+            decoder = new RLPDecoder(input);
+
+            // [ ["cat", "dog"], [ 1, 2 ], [] ]
+            decodedList = decoder.decodeList();
+            decoder = new RLPDecoder(decodedList);
+
+            // ["cat", "dog"]
+            decodedList = decoder.decodeList();
+            tempDecoder = new RLPDecoder(decodedList);
+            assertThat(tempDecoder.decodeString(), equalTo("cat"));
+            assertThat(tempDecoder.decodeString(), equalTo("dog"));
+
+            // [ 1, 2 ]
+            decodedList = decoder.decodeList();
+            tempDecoder = new RLPDecoder(decodedList);
+            assertThat(tempDecoder.decodeInt(), equalTo(1));
+            assertThat(tempDecoder.decodeInt(), equalTo(2));
+
+            // []
+            decodedList = decoder.decodeList();
+            assertThat(decodedList, equalTo(ByteUtil.EMPTY_BYTE_ARRAY));
+        }
+
+        @Test
+        public void decodeEmptyListOfListTest() {
+            RLPDecoder decoder, tempDecoder;
+            byte[] decodedList;
+
+            final byte[] input = Hex.decode("c4c2c0c0c0");
+            decoder = new RLPDecoder(input);
+
+            // [ [ [], [] ], [] ]
+            decodedList = decoder.decodeList();
+            decoder = new RLPDecoder(decodedList);
+
+            // [ [], [] ]
+            decodedList = decoder.decodeList();
+            tempDecoder = new RLPDecoder(decodedList);
+            assertThat(tempDecoder.decodeList(), equalTo(ByteUtil.EMPTY_BYTE_ARRAY));
+            assertThat(tempDecoder.decodeList(), equalTo(ByteUtil.EMPTY_BYTE_ARRAY));
+
+            // []
+            decodedList = decoder.decodeList();
+            assertThat(decodedList, equalTo(ByteUtil.EMPTY_BYTE_ARRAY));
+        }
+
+        @Test
+        public void decodeRepOfTwoListOfListTest() {
+            RLPDecoder decoder, tempDecoder1, tempDecoder2;
+            byte[] decodedList;
+
+            final byte[] input = Hex.decode("c7c0c1c0c3c0c1c0");
+            decoder = new RLPDecoder(input);
+
+            // [ [], [[]], [ [], [[]] ] ]
+            decodedList = decoder.decodeList();
+            decoder = new RLPDecoder(decodedList);
+
+            // []
+            decodedList = decoder.decodeList();
+            assertThat(decodedList, equalTo(ByteUtil.EMPTY_BYTE_ARRAY));
+
+            // [[]]
+            decodedList = decoder.decodeList();
+            tempDecoder1 = new RLPDecoder(decodedList);
+            assertThat(tempDecoder1.decodeList(), equalTo(ByteUtil.EMPTY_BYTE_ARRAY));
+
+            // [ [], [[]] ]
+            decodedList = decoder.decodeList();
+            tempDecoder1 = new RLPDecoder(decodedList);
+            assertThat(tempDecoder1.decodeList(), equalTo(ByteUtil.EMPTY_BYTE_ARRAY));
+            decodedList = tempDecoder1.decodeList();
+            tempDecoder2 = new RLPDecoder(decodedList);
+            assertThat(tempDecoder2.decodeList(), equalTo(ByteUtil.EMPTY_BYTE_ARRAY));
+        }
+
     }
 
     private static abstract class TestData {

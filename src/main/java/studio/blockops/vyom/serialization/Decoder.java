@@ -43,13 +43,8 @@ public interface Decoder {
     String decodeString();
 
     /**
-     * Decodes an object value.
+     * Decodes a list of elements.
      */
-    void decodeObject();
-
-    /**
-     * Decodes multiple object values.
-     */
-    void decodeObjectArray();
+    byte[] decodeList();
 
 }

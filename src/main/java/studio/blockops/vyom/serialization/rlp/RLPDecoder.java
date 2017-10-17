@@ -135,15 +135,18 @@ public final class RLPDecoder implements Decoder, RLPParameters {
     }
 
     @Override
-    public void decodeObject() {
-        // TODO Auto-generated method stub
+    public byte[] decodeList() {
+        final int b = read();
+        final int masked = b & 0xFF;
 
-    }
-
-    @Override
-    public void decodeObjectArray() {
-        // TODO Auto-generated method stub
-
+        if (masked > OFFSET_SHORT_LIST) {
+            final int length = getLength(b);
+            return read(length);
+        } else if (masked == OFFSET_SHORT_LIST) {
+            return new byte[]{};
+        } else {
+            throw new DecoderException("Invalid list decoding with first byte value: 0x" + Integer.toHexString(b));
+        }
     }
 
     private final int read() {
@@ -185,6 +188,11 @@ public final class RLPDecoder implements Decoder, RLPParameters {
             return (int) decodeAsBigEndianLong(lengthOfLength);
         } else if (masked > OFFSET_SHORT_ITEM && masked <= OFFSET_LONG_ITEM) {
             return b - OFFSET_SHORT_ITEM;
+        } else if (masked > OFFSET_LONG_LIST) {
+            final int lengthOfLength = b - OFFSET_LONG_LIST;
+            return (int) decodeAsBigEndianLong(lengthOfLength);
+        } else if (masked > OFFSET_SHORT_LIST && masked <= OFFSET_LONG_LIST) {
+            return b - OFFSET_SHORT_LIST;
         } else {
             throw new DecoderException("Invalid length decoding with first byte value: 0x" + Integer.toHexString(b));
         }

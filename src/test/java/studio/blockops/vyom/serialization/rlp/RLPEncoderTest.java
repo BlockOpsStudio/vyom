@@ -498,7 +498,7 @@ public class RLPEncoderTest {
         }
 
         @Test
-        public void encodeEmptyListOfList() {
+        public void encodeEmptyListOfListTest() {
             // [ [ [], [] ], [] ]
             RLPEncoder listEncoder, tempEncoder;
 
@@ -545,7 +545,7 @@ public class RLPEncoderTest {
             tempEncoder1.encodeList(tempEncoder2.getEncoded());
             listEncoder.encodeList(tempEncoder1.getEncoded());
 
-            // [ [ [], [] ], [] ]
+            // [ [], [[]], [ [], [[]] ] ]
             encoder.encodeList(listEncoder.getEncoded());
 
             final byte[] actual = encoder.getEncoded();
