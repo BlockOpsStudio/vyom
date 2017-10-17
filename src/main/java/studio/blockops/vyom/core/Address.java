@@ -35,6 +35,8 @@ public class Address implements Encodable {
      * @return The address
      */
     public static Address create(final byte[] value) {
+        Preconditions.checkNotNull(value);
+        Preconditions.checkArgument(value.length == 20, "Not a valid address length");
         return new Address(value);
     }
 
@@ -47,7 +49,9 @@ public class Address implements Encodable {
     public static Address createFromHexString(final String value) {
         try {
             Preconditions.checkNotNull(value);
-            return new Address(Hex.decode(value));
+            final byte[] bytes = Hex.decode(value);
+            Preconditions.checkArgument(bytes.length == 20, "Not a valid address length");
+            return new Address(bytes);
         } catch (final DecoderException e) {
             throw new CryptoException(e);
         }
