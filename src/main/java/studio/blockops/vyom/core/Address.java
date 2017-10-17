@@ -11,6 +11,7 @@ import com.google.common.base.Preconditions;
 import studio.blockops.vyom.crypto.CryptoException;
 import studio.blockops.vyom.serialization.Encodable;
 import studio.blockops.vyom.serialization.Encoder;
+import studio.blockops.vyom.serialization.rlp.RLPDecoder;
 import studio.blockops.vyom.serialization.rlp.RLPEncoder;
 
 /**
@@ -55,6 +56,19 @@ public class Address implements Encodable {
         } catch (final DecoderException e) {
             throw new CryptoException(e);
         }
+    }
+
+    /**
+     * Creates a new address by decoding from RLP data
+     *
+     * @param decoder The {@link RLPDecoder}
+     * @return The address
+     */
+    public static Address decode(final RLPDecoder decoder) {
+        Preconditions.checkNotNull(decoder);
+        final byte[] bytes = decoder.decodeBytes();
+        Preconditions.checkArgument(bytes.length == 20, "Not a valid address length");
+        return new Address(bytes);
     }
 
     private Address(final byte[] value) {
